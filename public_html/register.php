@@ -1,3 +1,8 @@
+<?php
+
+include_once("./database/constants.php");
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,7 +23,7 @@
     <section class="my-5">
         <div class="container">
             <div class="card text-left" style="width:30rem; margin:0 auto; ">
-                <div class="card-header">Register</div>
+                <div class="card-header h4">Register Form</div>
                 <div class="card-body">
                     <small id="confirm" class="form-text text-center text-muted"></small>
                     <form id="register_form" onsubmit="return false" method="POST" autocomplete="off">
@@ -56,9 +61,11 @@
                             </select>
                             <small id="user_type_error" class="form-text text-muted"></small>
                         </div>
-                        <button type="submit" name="user_register" class="btn btn-primary"><i
+                        <button type="submit" name="user_register" class="btn btn-primary mr-2"><i
                                 class="fa fa-registered"></i>
                             Register </button>
+                        <a href="<?php echo DOMAIN . "/" ?>">Already Registered ?</a>
+
                     </form>
                 </div>
                 <div class="card-footer">

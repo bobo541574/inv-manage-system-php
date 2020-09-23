@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="<?php echo "/dashboard.php" ?>"><i class="fas fa-warehouse"></i> Inventory
+    <a class="navbar-brand" href="<?php echo DOMAIN . "/dashboard.php" ?>"><i class="fas fa-warehouse"></i> Inventory
         System</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,9 +13,9 @@
             <?php if (isset($_SESSION['id'])) : ?>
             <li class="nav-item active">
                 <!-- <a class="nav-link" href="#"><i class="fa fa-sign-out"></i> Logout</a> -->
-                <form action="<?php echo "/includes/Auth.php" ?>" method="post">
+                <form action="<?php echo DOMAIN . "/includes/Auth.php" ?>" method="post">
                     <input type="hidden" name="logout" value="LOGOUT">
-                    <button class="nav-link active btn"><i class="fa fa-sign-out"></i>
+                    <button class="nav-link active btn"><i class="fa fa-sign-out-alt"></i>
                         Logout</button>
                 </form>
             </li>

@@ -47,13 +47,48 @@ include_once("./database/constants.php");
                                         <th>No.</th>
                                         <th>Category</th>
                                         <th>Parent Category</th>
+                                        <th>Status</th>
                                         <th colspan="2">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="cat_list" data-value="List">
 
                                 </tbody>
+
+                                <!-- Delete Confrimation -->
+                                <div class="modal fade" id="delete_confirm" tabindex="-1"
+                                    aria-labelledby="delete_confirm_label" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title text-warning" id="delete_confirm_label">
+                                                    <i class="fa fa-exclamation-triangle"></i> Confirmation
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="cat_delete" onsubmit="return false">
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="category_id" id="category_id">
+                                                    <div class="text-center h5">Are you sure? You want to delete...!
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save
+                                                        changes</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </table>
+                        </div>
+                        <div id="paginator">
+
                         </div>
                     </div>
                 </div>

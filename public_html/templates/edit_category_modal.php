@@ -19,7 +19,7 @@
                     </div>
                     <div class="form-group">
                         <label for="parent_cat_id">Parent Category</label>
-                        <select class="form-control" name="parent_cat_id" id="parent_cat_id">
+                        <select class="custom-select" name="parent_cat_id" id="parent_cat_id">
                         </select>
                         <small id="parent_cat_id_error" class="form-text text-muted"></small>
                     </div>

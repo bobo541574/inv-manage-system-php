@@ -55,9 +55,10 @@ include_once("./database/constants.php");
                                     placeholder="Enter Password">
                                 <small id="password_error" class="form-text text-muted"></small>
                             </div>
-                            <button type="submit" value="Login" class="btn btn-primary"><i class="fa fa-unlock"></i>
+                            <button type="submit" value="Login" class="btn btn-primary mr-2"><i
+                                    class="fa fa-unlock"></i>
                                 Submit</button>
-                            <span><a href="">Register</a></span>
+                            <span><a href="<?php echo DOMAIN . "/register.php" ?>">Register</a></span>
                         </form>
                     </div>
                     <div class="card-footer">
