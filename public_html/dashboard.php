@@ -74,9 +74,11 @@ if (!isset($_SESSION["id"])) {
                             <h5 class="card-title">Manage Parent Category</h5>
                             <p class="card-text">Here you can manage your parent category and add new parent category
                             </p>
-                            <a href="#" data-toggle="modal" data-target="#product_modal" class="btn btn-primary">Add
+                            <a href="#" data-toggle="modal" data-target="#parent_category_modal"
+                                class="btn btn-primary">Add
                             </a>
-                            <a href="#" class="btn btn-warning">Manage </a>
+                            <a href="<?php echo DOMAIN . "/parent_categories.php" ?>" class="btn btn-warning">Manage
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -107,9 +109,9 @@ if (!isset($_SESSION["id"])) {
         </div>
 
         <!-- Modal -->
+        <?php include_once('./templates/parent_category_modal.php') ?>
         <?php include_once('./templates/category_modal.php') ?>
         <?php include_once('./templates/brand_modal.php') ?>
-        <?php include_once('./templates/product_modal.php') ?>
     </section>
 
     <!-- JS, Popper.js, and jQuery -->

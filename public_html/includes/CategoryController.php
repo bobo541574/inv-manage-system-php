@@ -5,7 +5,7 @@ include_once("ParentCategory.php");
 include_once("Category.php");
 
 if (isset($_POST['getParentCategory'])) {
-    $result = new ParentCategory();
+    $result = new Category();
     $categories = $result->getAllCategories();
     foreach ($categories as $category) {
         echo "<option value=" . $category['parent_cat_id'] . ">" . $category['parent_cat_name'] . "</option>";

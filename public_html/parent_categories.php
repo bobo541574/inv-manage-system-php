@@ -30,7 +30,7 @@ include_once("./database/constants.php");
                 <div class="col-md-8 mx-auto">
                     <div class="card shadow">
                         <div class="card-header h4">
-                            Category List
+                            Parent Category List
                         </div>
                         <?php if (!empty($_GET['msg'])) : ?>
                         <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
@@ -45,13 +45,11 @@ include_once("./database/constants.php");
                                 <thead class="thead-inverse">
                                     <tr>
                                         <th>No.</th>
-                                        <th>Category</th>
                                         <th>Parent Category</th>
-                                        <th>Status</th>
                                         <th colspan="2">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="cat_list" data-value="List">
+                                <tbody id="parent_cat_list" data-value="Parent_List">
 
                                 </tbody>
 
@@ -69,9 +67,9 @@ include_once("./database/constants.php");
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form id="cat_delete" onsubmit="return false">
+                                            <form id="parent_cat_delete" onsubmit="return false">
                                                 <div class="modal-body">
-                                                    <input type="hidden" name="category_id" id="category_id">
+                                                    <input type="hidden" name="parent_cat_id" id="parent_cat_id">
                                                     <div class="text-center h5">Are you sure? You want to delete...!
                                                     </div>
                                                 </div>
@@ -95,7 +93,7 @@ include_once("./database/constants.php");
             </div>
 
             <!-- Modal -->
-            <?php include_once('./templates/edit_category_modal.php') ?>
+            <?php include_once('./templates/edit_parent_category_modal.php') ?>
         </div>
     </section>
 
