@@ -1,7 +1,8 @@
 <?php
 
-class ParentCategory
+class Product
 {
+
     private $con;
 
     public function __construct()
@@ -12,10 +13,31 @@ class ParentCategory
         $this->con = $db->connect();
     }
 
-    public function getAllParentCategories()
+    public function addCategory($parent_cat_id, $category_name)
+    {
+        $stmt = $this->con->prepare("INSERT INTO `categories` (`parent_cat_id`, `category_name`, `status`) 
+                                    VALUES(?, ?, ?)");
+        $status = 1;
+        $stmt->bind_param("isi", $parent_cat_id, $category_name, $status);
+        $result = $stmt->execute() or die($this->con->error);
+        if ($result) {
+            return "CATEGORY_ADDED";
+        } else {
+            return 0;
+        }
+    }
+
+    public function getAllProducts()
     {
         $stmt = $this->con->prepare(
-            "SELECT * FROM parent_categories"
+            "SELECT *, cats.category_name, bds.brand_name, sku.sku_code, sku.color, sku.size, sku.price, sku.quantity
+            FROM products as pds 
+            JOIN categories as cats 
+            ON pds.category_id = cats.cat_id
+            JOIN brands as bds 
+            ON pds.brand_id = bds.brand_id
+            JOIN sku
+            ON pds.sku_code = sku.sku_code"
         );
         $stmt->execute() or die($this->con->error);
         $result = $stmt->get_result();
@@ -26,8 +48,6 @@ class ParentCategory
             }
             return $rows;
         }
-
-        return "NO_DATA";
     }
 
     private function paginate($table, $toCount, $current_page)
@@ -51,22 +71,30 @@ class ParentCategory
         return $paginate;
     }
 
-    /* Fetch All Parent Category */
-    public function getCategoriesWithPagination($current_page)
+    public function getProductsWithPagination($current_page)
     {
-        $paginate = $this->paginate("parent_categories", "parent_cat_id", $current_page);
+        $paginate = $this->paginate("products", "product_id", $current_page);
 
         // $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15";
         $numberOfRecordsPrePage = $paginate["numberOfRecordsPrePage"];
         $skipOfRecords = $paginate["skipOfRecords"];
 
-        $sql = "SELECT * FROM parent_categories LIMIT $numberOfRecordsPrePage OFFSET $skipOfRecords";
+        $sql = "SELECT pds.*, cats.category_name, bds.brand_name
+        FROM products as pds 
+        JOIN categories as cats 
+        ON pds.category_id = cats.cat_id
+        JOIN brands as bds 
+        ON pds.brand_id = bds.brand_id
+        LIMIT $numberOfRecordsPrePage OFFSET $skipOfRecords";
 
         $stmt = $this->con->prepare($sql);
         $stmt->execute() or die($this->con->error);
         $result = $stmt->get_result();
         $paginatedRecords = [];
         $rows = [];
+        // echo $result->num_rows;
+        // die();
+        // exit();
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $rows[] = $row;
@@ -82,46 +110,51 @@ class ParentCategory
         return "NO_DATA";
     }
 
-    /* Add Parent Category */
-    public function addParentCategory($parent_category_name)
+    public function updateCategory($category_id, $parent_cat_id, $category_name)
     {
-        $sql = "INSERT INTO `parent_categories` (`parent_cat_name`) VALUES(?)";
+        $sql = "UPDATE categories SET `parent_cat_id` = ?, `category_name` = ? WHERE `cat_id` = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("s", $parent_category_name);
+        $stmt->bind_param("isi", $parent_cat_id, $category_name, $category_id);
         $result = $stmt->execute() or die($this->con->error);
+
         if ($result) {
-            return "PARENT_CATEGORY_ADDED";
+            return "CATEGORY_UPDATED";
         } else {
             return 0;
         }
     }
 
-    /* Update Parent Category */
-    public function updateParentCategory($parent_cat_id, $parent_category_name)
+    public function statusCategory($category_id, $category_status)
     {
-        $sql = "UPDATE `parent_categories` SET `parent_cat_name` = ? WHERE `parent_cat_id` = ?";
+        $category_status = $category_status ? 0 : 1;
+        $sql = "UPDATE categories SET `status` = ? WHERE `cat_id` = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("si", $parent_category_name, $parent_cat_id);
+        $stmt->bind_param("si", $category_status, $category_id);
         $result = $stmt->execute() or die($this->con->error);
+
         if ($result) {
-            return "PARENT_CATEGORY_UPDATED";
+            return "CATEGORY_STATUS";
         } else {
             return 0;
         }
     }
 
-    /* Delete Parent Category */
-    public function deleteParentCategory($parent_cat_id)
+    public function deleteCategory($category_id)
     {
-        $sql = "DELETE FROM `parent_categories` WHERE `parent_cat_id` = ?";
+        $sql = "DELETE FROM categories WHERE `cat_id` = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("i", $parent_cat_id);
+        $stmt->bind_param("i", $category_id);
         $result = $stmt->execute() or die($this->con->error);
 
         if ($result) {
-            return "PARENT_CATEGORY_DELETED";
+            return "CATEGORY_DELETED";
         } else {
             return 0;
         }
     }
 }
+
+// $products = new Product();
+// echo "<pre>";
+// print_r($products->getProductsWithPagination(1));
+// echo "</pre>";

@@ -58,7 +58,8 @@ if (!isset($_SESSION["id"])) {
                                     <div class="card-body">
                                         <h5 class="card-title">New Order</h5>
                                         <p class="card-text">Here you can make invoices and new orders</p>
-                                        <a href="#" class="btn btn-primary">New Orders</a>
+                                        <a href="<?php echo DOMAIN . "/order.php" ?>" class="btn btn-primary">New
+                                            Orders</a>
                                     </div>
                                 </div>
                             </div>
@@ -101,7 +102,7 @@ if (!isset($_SESSION["id"])) {
                             <p class="card-text">Here you can manage your brands and add new brands</p>
                             <a href="#" data-toggle="modal" data-target="#brand_modal" class="btn btn-primary">Add
                             </a>
-                            <a href="#" class="btn btn-warning">Manage</a>
+                            <a href="<?php echo DOMAIN . "/brands.php" ?>" class="btn btn-warning">Manage</a>
                         </div>
                     </div>
                 </div>
@@ -112,6 +113,88 @@ if (!isset($_SESSION["id"])) {
         <?php include_once('./templates/parent_category_modal.php') ?>
         <?php include_once('./templates/category_modal.php') ?>
         <?php include_once('./templates/brand_modal.php') ?>
+    </section>
+
+    <section class="my-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mx-auto">
+                    <div class="card shadow-lg">
+                        <div class="card-header h4">
+                            Product List
+                        </div>
+                        <?php if (!empty($_GET['msg'])) : ?>
+                        <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <?php endif ?>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-inverse table-hover" style="font-size: medium;">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Photo</th>
+                                            <th>Product</th>
+                                            <th>Brand</th>
+                                            <th>Category</th>
+                                            <th>Color</th>
+                                            <th>Size</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Status</th>
+                                            <th colspan="2">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="product_list" data-value="Product_List">
+
+                                    </tbody>
+
+                                    <!-- Delete Confrimation -->
+                                    <div class="modal fade" id="delete_confirm" tabindex="-1"
+                                        aria-labelledby="delete_confirm_label" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title text-warning" id="delete_confirm_label">
+                                                        <i class="fa fa-exclamation-triangle"></i> Confirmation
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form id="brand_delete" onsubmit="return false">
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="product_id" id="product_id">
+                                                        <div class="text-center h5">Are you sure? You want to delete...!
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Save
+                                                            changes</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="paginator">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <?php include_once('./templates/edit_brand_modal.php') ?>
+        </div>
     </section>
 
     <!-- JS, Popper.js, and jQuery -->

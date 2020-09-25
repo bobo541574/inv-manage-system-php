@@ -1,6 +1,6 @@
 <?php
 
-class ParentCategory
+class Brand
 {
     private $con;
 
@@ -10,24 +10,6 @@ class ParentCategory
 
         $db = new Database();
         $this->con = $db->connect();
-    }
-
-    public function getAllParentCategories()
-    {
-        $stmt = $this->con->prepare(
-            "SELECT * FROM parent_categories"
-        );
-        $stmt->execute() or die($this->con->error);
-        $result = $stmt->get_result();
-        $rows = [];
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $rows[] = $row;
-            }
-            return $rows;
-        }
-
-        return "NO_DATA";
     }
 
     private function paginate($table, $toCount, $current_page)
@@ -51,16 +33,16 @@ class ParentCategory
         return $paginate;
     }
 
-    /* Fetch All Parent Category */
+    /* Fetch All Brand */
     public function getCategoriesWithPagination($current_page)
     {
-        $paginate = $this->paginate("parent_categories", "parent_cat_id", $current_page);
+        $paginate = $this->paginate("brands", "brand_id", $current_page);
 
         // $sql = "SELECT * FROM Orders LIMIT 10 OFFSET 15";
         $numberOfRecordsPrePage = $paginate["numberOfRecordsPrePage"];
         $skipOfRecords = $paginate["skipOfRecords"];
 
-        $sql = "SELECT * FROM parent_categories LIMIT $numberOfRecordsPrePage OFFSET $skipOfRecords";
+        $sql = "SELECT * FROM brands LIMIT $numberOfRecordsPrePage OFFSET $skipOfRecords";
 
         $stmt = $this->con->prepare($sql);
         $stmt->execute() or die($this->con->error);
@@ -82,44 +64,44 @@ class ParentCategory
         return "NO_DATA";
     }
 
-    /* Add Parent Category */
-    public function addParentCategory($parent_category_name)
+    /* Add Brand */
+    public function addBrand($brand_name, $logo)
     {
-        $sql = "INSERT INTO `parent_categories` (`parent_cat_name`) VALUES(?)";
+        $sql = "INSERT INTO `brands` (`brand_name`, `logo`) VALUES(?, ?)";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("s", $parent_category_name);
+        $stmt->bind_param("ss", $brand_name, $logo);
         $result = $stmt->execute() or die($this->con->error);
         if ($result) {
-            return "PARENT_CATEGORY_ADDED";
+            return "BRAND_ADDED";
         } else {
             return 0;
         }
     }
 
-    /* Update Parent Category */
-    public function updateParentCategory($parent_cat_id, $parent_category_name)
+    /* Update Brand */
+    public function updateBrand($brand_id, $brand_name)
     {
-        $sql = "UPDATE `parent_categories` SET `parent_cat_name` = ? WHERE `parent_cat_id` = ?";
+        $sql = "UPDATE `brands` SET `brand_name` = ? WHERE `brand_id` = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("si", $parent_category_name, $parent_cat_id);
+        $stmt->bind_param("si", $brand_name, $brand_id);
         $result = $stmt->execute() or die($this->con->error);
         if ($result) {
-            return "PARENT_CATEGORY_UPDATED";
+            return "BRAND_UPDATED";
         } else {
             return 0;
         }
     }
 
-    /* Delete Parent Category */
-    public function deleteParentCategory($parent_cat_id)
+    /* Delete Brand */
+    public function deleteBrand($brand_id)
     {
-        $sql = "DELETE FROM `parent_categories` WHERE `parent_cat_id` = ?";
+        $sql = "DELETE FROM `brands` WHERE `brand_id` = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("i", $parent_cat_id);
+        $stmt->bind_param("i", $brand_id);
         $result = $stmt->execute() or die($this->con->error);
 
         if ($result) {
-            return "PARENT_CATEGORY_DELETED";
+            return "BRAND_DELETED";
         } else {
             return 0;
         }

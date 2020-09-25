@@ -48,7 +48,7 @@ function fetch_parent_categories(current_page) {
                                         </a>
                                     </li>`;
                 for (let i = 1; i <= total_pages; i++) {
-                    paginate += `<li class="page-item"><a class="page-link" href="#" onclick="fetch_categories(${i})">${i}</a></li>`;
+                    paginate += `<li class="page-item"><a class="page-link ${current_page == i ? 'bg-primary text-light' : ''}" href="#" onclick="fetch_categories(${i})">${i}</a></li>`;
                 }
                 paginate += `
                                     <li class="page-item ${next_page <= total_pages ? "" : "disabled text-muted"}">
@@ -74,8 +74,9 @@ $("tbody").on("click", ".parent_category_edit", function () {
     let parent_category_id = $(this).data("parent_cat_id");
     let patent_category_name = $(this).data("parent_cat_name");
 
-    $("#parent_cat_id").val(parent_category_id);
-    $("#parent_category_name").val(patent_category_name);
+    $("form #parent_cat_id").val(parent_category_id);
+    $("form #parent_category_name").val(patent_category_name);
+    $("form #edit").val("EDIT");
 });
 /* End - Edit Category */
 

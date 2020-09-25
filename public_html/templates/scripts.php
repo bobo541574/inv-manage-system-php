@@ -6,6 +6,9 @@
 var DOMAIN = "http://localhost/projects/PHP/Inventory-Management-System/public_html";
 </script>
 
-<script src="./js/category.js"></script>
 <script src="./js/parent_category.js"></script>
+<script src="./js/category.js"></script>
+<script src="./js/brand.js"></script>
+<script src="./js/product.js"></script>
+<script src="./js/order.js"></script>
 <!-- <script src="./js/validation.js"></script> -->

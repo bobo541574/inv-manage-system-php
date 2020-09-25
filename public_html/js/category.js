@@ -18,8 +18,6 @@
 fetch_parent_categories();
 
 function fetch_parent_categories() {
-    console.log("fetch_parent_categories");
-
     $.ajax({
         url: DOMAIN + "/includes/CategoryController.php",
         method: "POST",
@@ -49,6 +47,7 @@ function fetch_categories(current_page) {
             let respose = JSON.parse(data);
             let paginator = respose["paginate"];
             let total_pages = paginator["totalPages"];
+            let skip_records = paginator["skipOfRecords"];
             let prev_page = paginator["prev_page"];
             let next_page = paginator["next_page"];
             let categories = respose["rows"];
@@ -62,7 +61,7 @@ function fetch_categories(current_page) {
                 let parent_cat_id = categories[i].parent_cat_id;
 
                 table += `<tr>
-                    <td>${i + 1}</td>
+                    <td>${(skip_records+i) + 1}</td>
                     <td>${category_name}</td>
                     <td>${parent_cat_name}</td>
                     <td>
@@ -79,10 +78,10 @@ function fetch_categories(current_page) {
                         <a href="#" data-category_id="${category_id}" data-category_name="${category_name}" data-parent_cat_id="${parent_cat_id}" data-toggle="modal" data-target="#edit_category_modal"
                             class="btn btn-sm btn-warning category_edit" data-toggle="tooltip" title="Edit Category"><i class="fa fa-edit"></i> Edit
                         </a>
-                        </td>
-                        <td>
-                            <a href="#" data-category_id="${category_id}" class="btn btn-sm btn-danger category_delete" data-toggle="modal" data-target="#delete_confirm" title="Delete Category"><i class="fa fa-trash"></i> Delete</a>
-                        </td>
+                    </td>
+                    <td>
+                        <a href="#" data-category_id="${category_id}" class="btn btn-sm btn-danger category_delete" data-toggle="modal" data-target="#delete_confirm" title="Delete Category"><i class="fa fa-trash"></i> Delete</a>
+                    </td>
                     </tr>`;
                 $("tbody").html(table);
             });
@@ -97,7 +96,7 @@ function fetch_categories(current_page) {
                                         </a>
                                     </li>`;
                 for (let i = 1; i <= total_pages; i++) {
-                    paginate += `<li class="page-item"><a class="page-link" href="#" onclick="fetch_categories(${i})">${i}</a></li>`;
+                    paginate += `<li class="page-item"><a class="page-link ${current_page == i ? 'bg-primary text-light' : ''}" href="#" onclick="fetch_categories(${i})">${i}</a></li>`;
                 }
                 paginate += `
                                 <li class="page-item ${next_page <= total_pages ? "" : "disabled text-muted"}">
@@ -121,9 +120,10 @@ $("tbody").on("click", ".category_edit", function () {
     let category_name = $(this).data("category_name");
     let parent_category_id = $(this).data("parent_cat_id");
 
-    $("#category_id").val(category_id);
-    $("#category_name").val(category_name);
-    $("#parent_cat_id").val(parent_category_id);
+    $("form #category_id").val(category_id);
+    $("form #category_name").val(category_name);
+    $("form #parent_cat_id").val(parent_category_id);
+    $("form #edit").val("EDIT");
 });
 /* End - Edit Category */
 
@@ -178,6 +178,7 @@ $("#cat_modal").on("submit", function () {
     let category_name = $("#category_name");
     let parent_cat_id = $("#parent_cat_id");
     let edit = $("#edit");
+    console.log(edit.val())
 
     if (category_name.val() == "") {
         category_name.addClass("border-danger");
@@ -209,6 +210,7 @@ $("#cat_modal").on("submit", function () {
         edit.val() != "EDIT"
     ) {
         /* Add Category */
+        console.log("!EDIT")
         $(".overlay").show();
         $.ajax({
             url: DOMAIN + "/includes/CategoryController.php",
@@ -237,7 +239,6 @@ $("#cat_modal").on("submit", function () {
             method: "POST",
             data: $("#cat_modal").serialize(),
             success: function (data) {
-                console.log(data);
                 if (data == "CATEGORY_UPDATED") {
                     $(".overlay").hide();
                     window.location.reload();

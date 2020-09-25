@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
                 <form id="cat_modal" onsubmit="return false" autocomplete="off">
-                    <input type="hidden" name="edit" id="edit" value="EDIT">
+                    <input type="hidden" name="edit" id="edit">
                     <input type="hidden" name="category_id" id="category_id">
                     <div class="form-group">
                         <label for="category_name">Enter Category</label>

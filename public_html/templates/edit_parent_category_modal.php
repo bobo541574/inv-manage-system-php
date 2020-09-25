@@ -10,7 +10,7 @@
             </div>
             <div class="modal-body">
                 <form id="parent_cat_modal" onsubmit="return false" autocomplete="off">
-                    <input type="hidden" name="edit" id="edit" value="EDIT">
+                    <input type="hidden" name="edit" id="edit">
                     <input type="hidden" name="parent_cat_id" id="parent_cat_id">
                     <div class="form-group">
                         <label for="parent_category_name">Enter Parent Category</label>
