@@ -36,11 +36,11 @@ function fetch_products(current_page) {
                 let status = product[i].status;
 
                 table += `<tr>
-                    <td class="align-middle">${(skip_records + i) + 1}</td>
-                    <td class="align-middle">${product_name}</td>
+                    <td class="align-middle">${skip_records + i + 1}</td>
                     <td class="align-middle">
                         <img src="${DOMAIN}/images/products/${photo}" alt="product_image" />
                     </td>
+                    <td class="align-middle">${product_name}</td>
                     <td class="align-middle">${category_name}</td>
                     <td class="align-middle">${brand_name}</td>
                     <td class="align-middle">${color}</td>
@@ -75,17 +75,27 @@ function fetch_products(current_page) {
                 paginate += `
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-end mr-4">
-                                    <li class="page-item ${current_page > 1 ? "" : "disabled text-muted"}">
-                                        <a class="page-link" href="#" aria-label="Previous" onclick="fetch_brands(${prev_page})">
+                                    <li class="page-item ${
+                                      current_page > 1
+                                        ? ""
+                                        : "disabled text-muted"
+                                    }">
+                                        <a class="page-link" href="javascript:void(0)" aria-label="Previous" onclick="fetch_products(${prev_page})">
                                             <span aria-hidden="true">&laquo;</span>
                                         </a>
                                     </li>`;
                 for (let i = 1; i <= total_pages; i++) {
-                    paginate += `<li class="page-item"><a class="page-link ${current_page == i ? 'bg-primary text-light' : ''}" href="#" onclick="fetch_brands(${i})">${i}</a></li>`;
+                    paginate += `<li class="page-item"><a class="page-link ${
+            current_page == i ? "bg-primary text-light" : ""
+          }" href="javascript:void(0)" onclick="fetch_products(${i})">${i}</a></li>`;
                 }
                 paginate += `
-                                    <li class="page-item ${next_page <= total_pages ? "" : "disabled text-muted"}">
-                                        <a class="page-link" href="#" aria-label="Next" onclick="fetch_brands(${next_page})">
+                                    <li class="page-item ${
+                                      next_page <= total_pages
+                                        ? ""
+                                        : "disabled text-muted"
+                                    }">
+                                        <a class="page-link" href="javascript:void(0)" aria-label="Next" onclick="fetch_products(${next_page})">
                                             <span aria-hidden="true">&raquo;</span>
                                         </a>
                                     </li>
@@ -109,7 +119,7 @@ $("tbody").on("click", ".product_edit", function () {
     let size = $(this).data("size");
     let price = $(this).data("price");
     let quantity = $(this).data("quantity");
-    console.log(photo)
+    console.log(photo);
 
     $("form #product_name").val(product_name);
     $("form #old_photo").val(photo);
@@ -122,10 +132,62 @@ $("tbody").on("click", ".product_edit", function () {
     $("form #quantity").val(quantity);
     $("form #edit").val("EDIT");
 });
+
+$("#edit_prod_modal").on("submit", function () {
+    let status = false;
+    let product_name = $("#edit_prod_modal #product_name");
+    let photo = $("#edit_prod_modal #photo");
+    let old_photo = $("#edit_prod_modal #old_photo");
+    let category_id = $("#edit_prod_modal #category_id");
+    let brand_id = $("#edit_prod_modal #brand_id");
+    let color = $("#edit_prod_modal #color");
+    let size = $("#edit_prod_modal #size");
+    let price = $("#edit_prod_modal #price");
+    let quantity = $("#edit_prod_modal #quantity");
+    let edit = "EDIT";
+
+    validation(
+        product_name,
+        photo,
+        old_photo,
+        category_id,
+        brand_id,
+        color,
+        size,
+        price,
+        quantity,
+        edit
+    );
+
+    if (
+        product_name.val() &&
+        (photo.val() || old_photo.val()) &&
+        category_id.val() &&
+        brand_id.val() &&
+        color.val() &&
+        size.val() &&
+        price.val() &&
+        quantity.val()
+    ) {
+        /* Update Brand */
+        // $(".overlay").show();
+        $.ajax({
+            url: DOMAIN + "/includes/ProductController.php",
+            method: "POST",
+            data: $("#bd_modal").serialize(),
+            success: function (data) {
+                if (data == "PRODUCT_UPDATED") {
+                    // $(".overlay").hide();
+                    window.location.reload();
+                }
+            },
+        });
+    }
+});
 /* End - Edit Product */
 
 /* Start - Delect Product */
-$("tbody").on("click", ".brand_delete", function () {
+$("tbody").on("click", ".product_delete", function () {
     let product_id = $(this).data("product_id");
 
     $("#product_id").val(product_id);
@@ -146,10 +208,11 @@ $("#product_delete").on("submit", function () {
 });
 /* End - Delect Product */
 
+/* Start - Photo Upload */
 let loadFile = function () {
     let formData = new FormData();
     let files = $("#photo")[0].files[0];
-    formData.append('file', files);
+    formData.append("file", files);
     // console.log(formData)
     // $(".overlay").show();
     $.ajax({
@@ -164,152 +227,156 @@ let loadFile = function () {
             }
         },
     });
+};
+/* End - Photo Upload */
 
-}
-
-function validation(product_name, photo = "", old_photo = "", category_id, brand_id, color, size, price, quantity, edit = null) {
-    console.log((edit == "EDIT") ? "#edit_prod_modal" : "#prod_modal");
+/* Start - From Validation */
+function validation(
+    product_name,
+    photo = "",
+    old_photo = "",
+    category_id,
+    brand_id,
+    color,
+    size,
+    price,
+    quantity,
+    edit = null
+) {
+    //   console.log(photo.val() + "||" + old_photo.val());
+    console.log(edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal");
     if (product_name.val() == "") {
         product_name.addClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : ""} #product_name_error`).html(
+        $(`${edit == "EDIT" ? "#edit_prod_modal" : ""} #product_name_error`).html(
             `<span class="text-danger">Product Name is required.</span>`
         );
         status = false;
     } else {
         product_name.removeClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #product_name_error`).html("");
+        $(
+            `${
+        edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"
+      } #product_name_error`
+        ).html("");
         status = true;
     }
 
     if (photo.val() == "" && old_photo.val() == "") {
         photo.addClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #photo_error`).html(
-            `<span class="text-danger">Photo is required.</span>`
-        );
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #photo_error`
+        ).html(`<span class="text-danger">Photo is required.</span>`);
         status = false;
     } else {
         var loadFile = function (event) {
-            var image = document.getElementById('output');
+            var image = document.getElementById("output");
             image.src = URL.createObjectURL(event.target.files[0]);
         };
         photo.removeClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #photo_error`).html("");
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #photo_error`
+        ).html("");
         status = true;
     }
 
     if (category_id.val() == "0") {
         category_id.addClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #category_id_error`).html(
-            `<span class="text-danger">Category is required.</span>`
-        );
+        $(
+            `${
+        edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"
+      } #category_id_error`
+        ).html(`<span class="text-danger">Category is required.</span>`);
         status = false;
     } else {
         category_id.removeClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #category_id_error`).html("");
+        $(
+            `${
+        edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"
+      } #category_id_error`
+        ).html("");
         status = true;
     }
 
     if (brand_id.val() == "0") {
         brand_id.addClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #brand_id_error`).html(
-            `<span class="text-danger">Brand is required.</span>`
-        );
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #brand_id_error`
+        ).html(`<span class="text-danger">Brand is required.</span>`);
         status = false;
     } else {
         brand_id.removeClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #brand_id_error`).html("");
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #brand_id_error`
+        ).html("");
         status = true;
     }
 
     if (color.val() == "") {
         color.addClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #color_error`).html(
-            `<span class="text-danger">Color is required.</span>`
-        );
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #color_error`
+        ).html(`<span class="text-danger">Color is required.</span>`);
         status = false;
     } else {
         color.removeClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #color_error`).html("");
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #color_error`
+        ).html("");
         status = true;
     }
 
     if (size.val() == "") {
         size.addClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #size_error`).html(
-            `<span class="text-danger">Size is required.</span>`
-        );
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #size_error`
+        ).html(`<span class="text-danger">Size is required.</span>`);
         status = false;
     } else {
         size.removeClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #size_error`).html("");
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #size_error`
+        ).html("");
         status = true;
     }
 
     if (price.val() == "") {
         price.addClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #price_error`).html(
-            `<span class="text-danger">Price is required.</span>`
-        );
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #price_error`
+        ).html(`<span class="text-danger">Price is required.</span>`);
         status = false;
     } else {
         price.removeClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #price_error`).html("");
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #price_error`
+        ).html("");
         status = true;
     }
 
     if (quantity.val() == "") {
         quantity.addClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #quantity_error`).html(
-            `<span class="text-danger">Quantity is required.</span>`
-        );
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #quantity_error`
+        ).html(`<span class="text-danger">Quantity is required.</span>`);
         status = false;
     } else {
         quantity.removeClass("is-invalid");
-        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #quantity_error`).html("");
+        $(
+            `${edit == "EDIT" ? "#edit_prod_modal" : "#prod_modal"} #quantity_error`
+        ).html("");
         status = true;
     }
 
     return;
 }
+/* End - From Validation */
 
-$("#edit_prod_modal").on("submit", function () {
-    let status = false;
-    let product_name = $("#edit_prod_modal #product_name");
-    let photo = $("#edit_prod_modal #photo");
-    let old_photo = $("#edit_prod_modal #old_photo");
-    let category_id = $("#edit_prod_modal #category_id");
-    let brand_id = $("#edit_prod_modal #brand_id");
-    let color = $("#edit_prod_modal #color");
-    let size = $("#edit_prod_modal #size");
-    let price = $("#edit_prod_modal #price");
-    let quantity = $("#edit_prod_modal #quantity");
-    let edit = "EDIT";
-
-    validation(product_name, photo, old_photo, category_id, brand_id, color, size, price, quantity, edit);
-
-    if (product_name.val() && (photo.val() || old_photo.val()) && category_id.val() && brand_id.val() && color.val() && size.val() && price.val() && quantity.val()) {
-        /* Update Brand */
-        // $(".overlay").show();
-        $.ajax({
-            url: DOMAIN + "/includes/ProductController.php",
-            method: "POST",
-            data: $("#bd_modal").serialize(),
-            success: function (data) {
-                if (data == "PRODUCT_UPDATED") {
-                    // $(".overlay").hide();
-                    window.location.reload();
-                }
-            },
-        });
-    }
-})
-
+/* Start - Create Product */
 $("#prod_modal").on("submit", function () {
     let status = false;
     let product_name = $("#product_name");
     let photo = $("#photo");
     let old_photo = $("#photo");
-    old_photo.val("");
     let category_id = $("#category_id");
     let brand_id = $("#brand_id");
     let color = $("#color");
@@ -317,12 +384,31 @@ $("#prod_modal").on("submit", function () {
     let price = $("#price");
     let quantity = $("#quantity");
 
-    // console.log(photo[0].files[0].name);
-    console.log(quantity.val())
+    //   console.log(photo[0].files[0].name);
+    //   console.log(photo.val());
 
-    validation(product_name, photo, old_photo, category_id, brand_id, color, size, price, quantity);
+    validation(
+        product_name,
+        photo,
+        old_photo,
+        category_id,
+        brand_id,
+        color,
+        size,
+        price,
+        quantity
+    );
 
-    if (product_name.val() && photo.val() && category_id.val() && brand_id.val() && color.val() && size.val() && price.val() && quantity.val()) {
+    if (
+        product_name.val() &&
+        photo.val() &&
+        category_id.val() &&
+        brand_id.val() &&
+        color.val() &&
+        size.val() &&
+        price.val() &&
+        quantity.val()
+    ) {
         /* Add Product */
         $(".overlay").show();
         $.ajax({
@@ -341,7 +427,6 @@ $("#prod_modal").on("submit", function () {
                 }
             },
         });
-    } else {
-
-    }
-})
+    } else {}
+});
+/* End - Create Product */

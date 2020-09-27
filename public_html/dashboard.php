@@ -142,19 +142,20 @@ if (!isset($_SESSION["id"])) {
                         <?php endif ?>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-striped table-inverse table-hover" style="font-size: medium;">
+                                <table class="table table-striped table-inverse table-hover text-center"
+                                    style="font-size: medium;">
                                     <thead class="thead-inverse">
                                         <tr>
-                                            <th>No.</th>
-                                            <th>Photo</th>
-                                            <th>Product</th>
-                                            <th>Brand</th>
-                                            <th>Category</th>
-                                            <th>Color</th>
-                                            <th>Size</th>
-                                            <th>Price</th>
-                                            <th>Quantity</th>
-                                            <th>Status</th>
+                                            <th style="width: 5%;">No.</th>
+                                            <th style="width: 15%;">Photo</th>
+                                            <th style="width: 10%;">Product</th>
+                                            <th style="width: 10%;">Brand</th>
+                                            <th style="width: 10%;">Category</th>
+                                            <th style="width: 10%;">Color</th>
+                                            <th style="width: 10%;">Size</th>
+                                            <th style="width: 10%;">Price</th>
+                                            <th style="width: 10%;">Quantity</th>
+                                            <th style="width: 10%;">Status</th>
                                             <th colspan="2">Action</th>
                                         </tr>
                                     </thead>

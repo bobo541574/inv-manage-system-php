@@ -148,7 +148,7 @@ class Product
         JOIN categories as cats 
         ON pds.category_id = cats.cat_id
         JOIN brands as bds 
-        ON pds.brand_id = bds.brand_id
+        ON pds.brand_id = bds.brand_id ORDER BY pds.created_data DESC
         LIMIT $numberOfRecordsPrePage OFFSET $skipOfRecords";
 
         $stmt = $this->con->prepare($sql);
