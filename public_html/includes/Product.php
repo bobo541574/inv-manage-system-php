@@ -13,6 +13,56 @@ class Product
         $this->con = $db->connect();
     }
 
+    public function photoUpload($photo)
+    {
+        $photo_name = $photo['name'];
+        $tmp_name = $photo['tmp_name'];
+
+        /* Uploaded File Type */
+        $type = $photo['type'];
+
+        /* Upload Location */
+        $dir = BASE_LOCATION . "/images/products/";
+
+        /* Valid File Types */
+        $valid_extensions = array("image/jpg", "image/jpeg", "image/png");
+
+        /* File Type Validation */
+        $valid = in_array(strtolower($type), $valid_extensions) ? true : false;
+
+        $file_exist = file_exists($dir . $photo_name) ? true : false;
+
+        if (!$file_exist) {
+            if ($valid) {
+                if (move_uploaded_file($tmp_name, $dir . $photo_name)) {
+                    return "PHOTO_UPLOADED";
+                } else {
+                    return "SOMETHING_WRONG";
+                }
+            } else {
+                return "INVALID_FILE_TYPE";
+            }
+        } else {
+            return "FILE_ALREADY_EXIST";
+        }
+    }
+    public function addProduct(...$arg)
+    {
+        $product_code = "SKU-C{$arg[0]['category_id']}B{$arg[0]['brand_id']}-" . strtoupper($arg[0]['color']) . "-" . strtoupper($arg[0]['product_name']);
+        // return $product_code;
+
+        $sql = "INSERT INTO `products` (`product_code`, `product_name`, `photo`, `category_id`, `brand_id`, `color`, `size`, `price`, `quantity`)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("sssiissss", $product_code, $arg[0]['product_name'], $arg[0]['photo'], $arg[0]['category_id'], $arg[0]['brand_id'], $arg[0]['color'], $arg[0]['size'], $arg[0]['price'], $arg[0]['quantity']);
+        $result = $stmt->execute() or die($this->con->error);
+        if ($result) {
+            return "PRODUCT_ADDED";
+        } else {
+            return 0;
+        }
+    }
+
     public function addCategory($parent_cat_id, $category_name)
     {
         $stmt = $this->con->prepare("INSERT INTO `categories` (`parent_cat_id`, `category_name`, `status`) 
@@ -22,6 +72,20 @@ class Product
         $result = $stmt->execute() or die($this->con->error);
         if ($result) {
             return "CATEGORY_ADDED";
+        } else {
+            return 0;
+        }
+    }
+
+    public function getSingleProduct($product_id)
+    {
+        $sql = "SELECT * FROM `products` WHERE `product_id` = ?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("i", $product_id);
+        $stmt->execute() or die($this->con->error);
+        $result = $stmt->get_result();
+        if ($result->num_rows == 1) {
+            return $result->fetch_assoc();
         } else {
             return 0;
         }
@@ -156,5 +220,5 @@ class Product
 
 // $products = new Product();
 // echo "<pre>";
-// print_r($products->getProductsWithPagination(1));
+// print_r($products->addProduct("Bo Bo", "May"));
 // echo "</pre>";

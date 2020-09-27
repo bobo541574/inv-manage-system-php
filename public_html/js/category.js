@@ -1,36 +1,3 @@
-// $(document).ready(function () {
-// var DOMAIN = "http://localhost/projects/PHP/Inventory-Management-System/public_html";
-// $("#parent_cat_fetch").on("click", function () {
-//     $.ajax({
-//         url: DOMAIN + "/includes/CategoryController.php",
-//         method: "POST",
-//         data: {
-//             getParentCategory: 1 /* To Check Server Side */
-//         },
-//         success: function (data) {
-//             let choose = "<option value='0'>Choose Parent Category</option>"
-//             $("#parent_cat_id").html(choose + data);
-//         }
-//     })
-// })
-
-/* Fetch All Parent Category */
-fetch_parent_categories();
-
-function fetch_parent_categories() {
-    $.ajax({
-        url: DOMAIN + "/includes/CategoryController.php",
-        method: "POST",
-        data: {
-            getParentCategory: 1 /* To Check Server Side */ ,
-        },
-        success: function (data) {
-            let choose = "<option value='0'>Choose Parent Category</option>";
-            $("#parent_cat_id").html(choose + data);
-        },
-    });
-}
-
 /* Start - Fetch All Category */
 if ($("#cat_list").data("value") == "List") {
     fetch_categories(1);

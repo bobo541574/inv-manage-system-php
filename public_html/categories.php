@@ -101,6 +101,7 @@ include_once("./database/constants.php");
 
     <!-- JS, Popper.js, and jQuery -->
     <?php include_once('./templates/scripts.php') ?>
+    <script src="./js/category.js"></script>
 
 </body>
 

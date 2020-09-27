@@ -12,6 +12,23 @@ class Brand
         $this->con = $db->connect();
     }
 
+    public function getAllBrands()
+    {
+        $sql = "SELECT `brand_id`, `brand_name` FROM `brands`";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute() or die($this->con->error);
+        $result = $stmt->get_result();
+        $rows = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
+            return $rows;
+        }
+
+        return "NO_DATA";
+    }
+
     private function paginate($table, $toCount, $current_page)
     {
         $paginate = [];

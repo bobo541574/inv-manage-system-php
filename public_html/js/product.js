@@ -1,9 +1,9 @@
-/* Start - Fetch All Brand */
+/* Start - Fetch All Product */
 if ($("#product_list").data("value") == "Product_List") {
     fetch_products(1);
 }
 
-/* Start - Fetch All Brand */
+/* Start - Fetch All Product */
 function fetch_products(current_page) {
     $.ajax({
         url: DOMAIN + "/includes/ProductController.php",
@@ -25,7 +25,9 @@ function fetch_products(current_page) {
                 let product_id = product[i].product_id;
                 let product_name = product[i].product_name;
                 let photo = product[i].photo;
+                let category_id = product[i].category_id;
                 let category_name = product[i].category_name;
+                let brand_id = product[i].brand_id;
                 let brand_name = product[i].brand_name;
                 let color = product[i].color;
                 let size = product[i].size;
@@ -37,7 +39,7 @@ function fetch_products(current_page) {
                     <td class="align-middle">${(skip_records + i) + 1}</td>
                     <td class="align-middle">${product_name}</td>
                     <td class="align-middle">
-                        <img src="${DOMAIN}/${photo}" alt="product_image" />
+                        <img src="${DOMAIN}/images/products/${photo}" alt="product_image" />
                     </td>
                     <td class="align-middle">${category_name}</td>
                     <td class="align-middle">${brand_name}</td>
@@ -56,8 +58,11 @@ function fetch_products(current_page) {
                         </select>
                     </td>
                     <td class="align-middle">
-                        <a href="#" data-product_id="${product_id}" data-product_name="${product_name}" data-toggle="modal" data-target="#edit_product_modal"
-                            class="btn btn-sm btn-warning product_edit" data-toggle="tooltip" title="Edit Product"><i class="fa fa-edit"></i>
+                        <a href="javascript:void(0)" data-product_id="${product_id}" data-product_name="${product_name}"
+                                    data-category_id="${category_id}" data-brand_id="${brand_id}"
+                                    data-photo="${photo}" data-color="${color}" data-size="${size}" data-price="${price}" 
+                                    data-quantity="${quantity}" data-toggle="modal" data-target="#edit_product_modal"
+                            class="btn btn-sm btn-warning product_edit" title="Edit Product"><i class="fa fa-edit"></i>
                         </a>
                     </td>
                     <td class="align-middle">
@@ -92,104 +97,251 @@ function fetch_products(current_page) {
         },
     });
 }
-/* End - Fetch All Brand */
+/* End - Fetch All Product */
 
-/* Start - Edit Brand */
-$("tbody").on("click", ".brand_edit", function () {
+/* Start - Edit Product */
+$("tbody").on("click", ".product_edit", function () {
+    let product_name = $(this).data("product_name");
+    let photo = $(this).data("photo");
+    let category_id = $(this).data("category_id");
     let brand_id = $(this).data("brand_id");
-    let brand_name = $(this).data("brand_name");
+    let color = $(this).data("color");
+    let size = $(this).data("size");
+    let price = $(this).data("price");
+    let quantity = $(this).data("quantity");
+    console.log(photo)
 
+    $("form #product_name").val(product_name);
+    $("form #old_photo").val(photo);
+    // $("form #photo").val(photo);
+    $("form #category_id").val(category_id);
     $("form #brand_id").val(brand_id);
-    $("form #brand_name").val(brand_name);
+    $("form #color").val(color);
+    $("form #size").val(size);
+    $("form #price").val(price);
+    $("form #quantity").val(quantity);
     $("form #edit").val("EDIT");
 });
-/* End - Edit Brand */
+/* End - Edit Product */
 
-/* Start - Delecte Brand */
+/* Start - Delect Product */
 $("tbody").on("click", ".brand_delete", function () {
-    let brand_id = $(this).data("brand_id");
+    let product_id = $(this).data("product_id");
 
-    $("#brand_id").val(brand_id);
+    $("#product_id").val(product_id);
 });
-$("#brand_delete").on("submit", function () {
+$("#product_delete").on("submit", function () {
     $(".overlay").show();
     $.ajax({
         url: DOMAIN + "/includes/ProductController.php",
         method: "POST",
-        data: $("#brand_delete").serialize(),
+        data: $("#product_delete").serialize(),
         success: function (data) {
-            if (data == "BRAND_DELETED") {
-                fetch_brands(1);
+            if (data == "PRODUCT_DELETED") {
+                fetch_products(1);
                 $(".overlay").hide();
             }
         },
     });
 });
-/* End - Delecte Brand */
+/* End - Delect Product */
 
-// $("#bd_modal_alert").html("");
-$("#bd_modal").on("submit", function () {
+let loadFile = function () {
+    let formData = new FormData();
+    let files = $("#photo")[0].files[0];
+    formData.append('file', files);
+    // console.log(formData)
+    // $(".overlay").show();
+    $.ajax({
+        processData: false,
+        contentType: false,
+        url: DOMAIN + "/includes/ProductController.php",
+        method: "POST",
+        data: formData,
+        success: function (data) {
+            if (data == "PHOTO_UPLOADED") {
+                // $(".overlay").hide();
+            }
+        },
+    });
+
+}
+
+function validation(product_name, photo = "", old_photo = "", category_id, brand_id, color, size, price, quantity, edit = null) {
+    console.log((edit == "EDIT") ? "#edit_prod_modal" : "#prod_modal");
+    if (product_name.val() == "") {
+        product_name.addClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : ""} #product_name_error`).html(
+            `<span class="text-danger">Product Name is required.</span>`
+        );
+        status = false;
+    } else {
+        product_name.removeClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #product_name_error`).html("");
+        status = true;
+    }
+
+    if (photo.val() == "" && old_photo.val() == "") {
+        photo.addClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #photo_error`).html(
+            `<span class="text-danger">Photo is required.</span>`
+        );
+        status = false;
+    } else {
+        var loadFile = function (event) {
+            var image = document.getElementById('output');
+            image.src = URL.createObjectURL(event.target.files[0]);
+        };
+        photo.removeClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #photo_error`).html("");
+        status = true;
+    }
+
+    if (category_id.val() == "0") {
+        category_id.addClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #category_id_error`).html(
+            `<span class="text-danger">Category is required.</span>`
+        );
+        status = false;
+    } else {
+        category_id.removeClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #category_id_error`).html("");
+        status = true;
+    }
+
+    if (brand_id.val() == "0") {
+        brand_id.addClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #brand_id_error`).html(
+            `<span class="text-danger">Brand is required.</span>`
+        );
+        status = false;
+    } else {
+        brand_id.removeClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #brand_id_error`).html("");
+        status = true;
+    }
+
+    if (color.val() == "") {
+        color.addClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #color_error`).html(
+            `<span class="text-danger">Color is required.</span>`
+        );
+        status = false;
+    } else {
+        color.removeClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #color_error`).html("");
+        status = true;
+    }
+
+    if (size.val() == "") {
+        size.addClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #size_error`).html(
+            `<span class="text-danger">Size is required.</span>`
+        );
+        status = false;
+    } else {
+        size.removeClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #size_error`).html("");
+        status = true;
+    }
+
+    if (price.val() == "") {
+        price.addClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #price_error`).html(
+            `<span class="text-danger">Price is required.</span>`
+        );
+        status = false;
+    } else {
+        price.removeClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #price_error`).html("");
+        status = true;
+    }
+
+    if (quantity.val() == "") {
+        quantity.addClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #quantity_error`).html(
+            `<span class="text-danger">Quantity is required.</span>`
+        );
+        status = false;
+    } else {
+        quantity.removeClass("is-invalid");
+        $(`${(edit == 'EDIT') ? "#edit_prod_modal" : "#prod_modal"} #quantity_error`).html("");
+        status = true;
+    }
+
+    return;
+}
+
+$("#edit_prod_modal").on("submit", function () {
     let status = false;
-    let brand_name = $("#brand_name");
-    let logo = $("#logo");
-    let edit = $("#edit");
+    let product_name = $("#edit_prod_modal #product_name");
+    let photo = $("#edit_prod_modal #photo");
+    let old_photo = $("#edit_prod_modal #old_photo");
+    let category_id = $("#edit_prod_modal #category_id");
+    let brand_id = $("#edit_prod_modal #brand_id");
+    let color = $("#edit_prod_modal #color");
+    let size = $("#edit_prod_modal #size");
+    let price = $("#edit_prod_modal #price");
+    let quantity = $("#edit_prod_modal #quantity");
+    let edit = "EDIT";
 
-    if (brand_name.val() == "") {
-        brand_name.addClass("border-danger");
-        $("#brand_name_error").html(
-            `<span class="text-danger">Brand is required.</span>`
-        );
-        status = false;
-    } else {
-        brand_name.removeClass("border-danger");
-        $("#brand_name_error").html("");
-        status = true;
-    }
+    validation(product_name, photo, old_photo, category_id, brand_id, color, size, price, quantity, edit);
 
-    if (logo.val() == "") {
-        logo.addClass("border-danger");
-        $("#logo_error").html(
-            `<span class="text-danger">Brand is required.</span>`
-        );
-        status = false;
-    } else {
-        logo.removeClass("border-danger");
-        $("#logo_error").html("");
-        status = true;
-    }
-
-    if (logo.val() && brand_name.val() && edit.val() != "EDIT") {
-        /* Add Brand */
-        $(".overlay").show();
-        $.ajax({
-            url: DOMAIN + "/includes/ProductController.php",
-            method: "POST",
-            data: $("#bd_modal").serialize(),
-            success: function (data) {
-                if (data == "BRAND_ADDED") {
-                    $(".overlay").hide();
-                    $("#bd_modal_alert")
-                        .html(`<div class="alert alert-warning text-center" role="alert">
-                                                    <small class="text text-success">Brand is successfully add!!!</small>
-                                                </div>`);
-                    $("#brand_name").html("");
-                    $("#brand_name").val("");
-                }
-            },
-        });
-    } else if (logo.val() && brand_name.val() && edit.val() == "EDIT") {
+    if (product_name.val() && (photo.val() || old_photo.val()) && category_id.val() && brand_id.val() && color.val() && size.val() && price.val() && quantity.val()) {
         /* Update Brand */
-        $(".overlay").show();
+        // $(".overlay").show();
         $.ajax({
             url: DOMAIN + "/includes/ProductController.php",
             method: "POST",
             data: $("#bd_modal").serialize(),
             success: function (data) {
-                if (data == "BRAND_UPDATED") {
-                    $(".overlay").hide();
+                if (data == "PRODUCT_UPDATED") {
+                    // $(".overlay").hide();
                     window.location.reload();
                 }
             },
         });
+    }
+})
+
+$("#prod_modal").on("submit", function () {
+    let status = false;
+    let product_name = $("#product_name");
+    let photo = $("#photo");
+    let old_photo = $("#photo");
+    old_photo.val("");
+    let category_id = $("#category_id");
+    let brand_id = $("#brand_id");
+    let color = $("#color");
+    let size = $("#size");
+    let price = $("#price");
+    let quantity = $("#quantity");
+
+    // console.log(photo[0].files[0].name);
+    console.log(quantity.val())
+
+    validation(product_name, photo, old_photo, category_id, brand_id, color, size, price, quantity);
+
+    if (product_name.val() && photo.val() && category_id.val() && brand_id.val() && color.val() && size.val() && price.val() && quantity.val()) {
+        /* Add Product */
+        $(".overlay").show();
+        $.ajax({
+            url: DOMAIN + "/includes/ProductController.php",
+            method: "POST",
+            data: $("#prod_modal").serialize() + `&photo=${photo[0].files[0].name}`,
+            success: function (data) {
+                if (data == "PRODUCT_ADDED") {
+                    $(".overlay").hide();
+                    $("#prod_modal_alert")
+                        .html(`<div class="alert alert-warning text-center" role="alert">
+                                                    <small class="text text-success">Product is successfully add!!!</small>
+                                                </div>`);
+                    $("#product_name").html("");
+                    $("#product_name").val("");
+                }
+            },
+        });
+    } else {
+
     }
 })

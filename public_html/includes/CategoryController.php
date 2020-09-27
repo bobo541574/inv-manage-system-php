@@ -14,6 +14,16 @@ if (isset($_POST['getParentCategory'])) {
     exit();
 }
 
+if (isset($_POST['getCategory'])) {
+    $result = new Category();
+    $categories = $result->getAllCategories();
+    foreach ($categories as $category) {
+        echo "<option value=" . $category['cat_id'] . ">" . $category['category_name'] . "</option>";
+    }
+
+    exit();
+}
+
 if (isset($_POST['category_name']) && isset($_POST['parent_cat_id']) && !isset($_POST['category_id'])) {
     $result = new Category();
     $category = $result->addCategory($_POST['parent_cat_id'], $_POST['category_name']);

@@ -113,6 +113,9 @@ if (!isset($_SESSION["id"])) {
         <?php include_once('./templates/parent_category_modal.php') ?>
         <?php include_once('./templates/category_modal.php') ?>
         <?php include_once('./templates/brand_modal.php') ?>
+        <?php include_once('./templates/product_modal.php') ?>
+        <?php include_once('./templates/edit_product_modal.php') ?>
+
     </section>
 
     <section class="my-5">
@@ -121,7 +124,14 @@ if (!isset($_SESSION["id"])) {
                 <div class="col-md-12 mx-auto">
                     <div class="card shadow-lg">
                         <div class="card-header h4">
-                            Product List
+                            <div class="row justify-content-between m-1">
+                                Product List
+
+                                <a href="javascript:void(0)" class="btn btn-sm btn-primary" data-toggle="modal"
+                                    data-target="#product_modal" id="product">
+                                    Add
+                                </a>
+                            </div>
                         </div>
                         <?php if (!empty($_GET['msg'])) : ?>
                         <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
@@ -193,13 +203,66 @@ if (!isset($_SESSION["id"])) {
             </div>
 
             <!-- Modal -->
-            <?php include_once('./templates/edit_brand_modal.php') ?>
         </div>
     </section>
 
     <!-- JS, Popper.js, and jQuery -->
     <?php include_once('./templates/scripts.php') ?>
+    <script src="./js/product.js"></script>
+    <script>
+    // $(document).ready(function() {
+    /* Fetch All Parent Category */
+    fetch_parent_categories();
 
+    function fetch_parent_categories() {
+        $.ajax({
+            url: DOMAIN + "/includes/CategoryController.php",
+            method: "POST",
+            data: {
+                getParentCategory: 1 /* To Check Server Side */ ,
+            },
+            success: function(data) {
+                let choose = "<option value='0'>Choose Parent Category</option>";
+                $("form #parent_cat_id").html(choose + data);
+            },
+        });
+    }
+
+    fetch_categories();
+
+    function fetch_categories() {
+        $.ajax({
+            url: DOMAIN + "/includes/CategoryController.php",
+            method: "POST",
+            data: {
+                getCategory: 1 /* To Check Server Side */ ,
+            },
+            success: function(data) {
+                let choose = "<option value='0'>Choose Category</option>";
+                $("#category_id").html(choose + data);
+                $("#edit_prod_modal #category_id").html(choose + data);
+            },
+        });
+    }
+
+    fetch_brands();
+
+    function fetch_brands() {
+        $.ajax({
+            url: DOMAIN + "/includes/BrandController.php",
+            method: "POST",
+            data: {
+                getBrand: 1 /* To Check Server Side */ ,
+            },
+            success: function(data) {
+                let choose = "<option value='0'>Choose Brand</option>";
+                $("#brand_id").html(choose + data);
+                $("#edit_prod_modal #brand_id").html(choose + data);
+            },
+        });
+    }
+    // })
+    </script>
 </body>
 
 </html>

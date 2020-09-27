@@ -3,6 +3,16 @@
 include_once("../database/Database.php");
 include_once("Brand.php");
 
+if (isset($_POST['getBrand'])) {
+    $result = new Brand();
+    $brands = $result->getAllBrands();
+    foreach ($brands as $brand) {
+        echo "<option value=" . $brand['brand_id'] . ">" . $brand['brand_name'] . "</option>";
+    }
+
+    exit();
+}
+
 /* Fetch All Parent Category */
 if (isset($_POST['current_page'])) {
     $result = new Brand();

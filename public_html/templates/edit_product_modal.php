@@ -1,4 +1,4 @@
-<div class="modal fade" id="product_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="edit_product_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,22 +8,29 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="prod_modal" onsubmit="return false" autocomplete="off" enctype="multipart/form-data">
+                <form id="edit_prod_modal" onsubmit="return false" autocomplete="off" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-6">
+                            <input type="hidden" name="edit" id="edit">
                             <div class="form-group">
                                 <input type="text" name="product_name" id="product_name" class="form-control"
                                     placeholder="Enter Category">
                                 <small id="product_name_error" class="form-text text-muted"></small>
                             </div>
                             <div class="form-group">
+                                <input type="hidden" name="old_photo" id="old_photo">
+                                <input type="file" name="photo" id="photo" onchange="loadFile()" class="form-file-input"
+                                    placeholder="Enter Photo">
+                                <small id="photo_error" class="form-text text-muted"></small>
+                            </div>
+                            <!-- <div class="form-group">
                                 <div class="custom-file">
                                     <input type="file" name="photo" id="photo" onchange="loadFile()"
                                         class="custom-file-input" placeholder="Enter Photo">
                                     <label class="custom-file-label" for="photo">Choose file</label>
                                     <small id="photo_error" class="form-text text-muted"></small>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="form-group">
                                 <select class="custom-select" name="category_id" id="category_id">
                                 </select>

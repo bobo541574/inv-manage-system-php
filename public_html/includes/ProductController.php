@@ -1,23 +1,40 @@
 <?php
 
+include_once("../database/constants.php");
 include_once("../database/Database.php");
 include_once("Category.php");
 include_once("Brand.php");
 include_once("Product.php");
 
-if (isset($_POST['getParentCategory'])) {
-    $result = new Product();
-    $categories = $result->getAllCategories();
-    foreach ($categories as $category) {
-        echo "<option value=" . $category['parent_cat_id'] . ">" . $category['parent_cat_name'] . "</option>";
-    }
+if (isset($_FILES['file'])) {
+    $product = new Product();
+    $result = $product->photoUpload($photo = $_FILES['file']);
+    echo $result;
+
     exit();
 }
 
-if (isset($_POST['category_name']) && isset($_POST['parent_cat_id']) && !isset($_POST['category_id'])) {
+if (isset($_GET['product_id'])) {
     $result = new Product();
-    $category = $result->addCategory($_POST['parent_cat_id'], $_POST['category_name']);
-    echo $category;
+    $product = $result->getSingleProduct($_GET['product_id']);
+    // echo "<pre>";
+    // print_r($product);
+    // echo "</pre>";
+    header("location: " . DOMAIN . "/products.php?product=" . json_encode($product));
+
+    exit();
+}
+
+/* Add Product */
+if (isset($_POST['product_name']) && isset($_POST['photo'])) {
+    $result = new Product();
+    $product = $result->addProduct($_POST);
+    // $product = $result->addProduct($_POST['product_name'], $_POST['photo'], $_POST['category_id'], $_POST['brand_id'], $_POST['color'], $_POST['size'], $_POST['price'], $_POST['quantity']);
+    // echo $product;
+
+    echo "<pre>";
+    print_r($product);
+    echo "</pre>";
 
     exit();
 }

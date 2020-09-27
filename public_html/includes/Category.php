@@ -29,12 +29,8 @@ class Category
 
     public function getAllCategories()
     {
-        $stmt = $this->con->prepare(
-            "SELECT *, p_cats.parent_cat_name 
-            FROM categories as cats 
-            JOIN parent_categories as p_cats 
-            ON cats.parent_cat_id = p_cats.parent_cat_id"
-        );
+        $sql = "SELECT `cat_id`, `category_name` FROM `categories`";
+        $stmt = $this->con->prepare($sql);
         $stmt->execute() or die($this->con->error);
         $result = $stmt->get_result();
         $rows = [];

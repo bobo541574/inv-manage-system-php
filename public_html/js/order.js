@@ -2,6 +2,7 @@
 if ($("#product_order").data("value") == "Product_Order") {
     fetch_products(1);
 }
+fetch_customer_order();
 
 /* Start - Fetch All Brand */
 function fetch_products(current_page) {
@@ -83,7 +84,7 @@ function fetch_products(current_page) {
 }
 /* End - Fetch All Brand */
 
-/* Start - Edit Brand */
+/* Start - Order */
 $("tbody").on("click", ".product_order", function () {
     let product_id = $(this).data("product_id");
     let product_code = $(this).data("product_code");
@@ -119,17 +120,16 @@ $("tbody").on("click", ".product_order", function () {
     }
 
     localStorage.setItem("customer_order", JSON.stringify(customer_order_obj));
-    // console.log(customer_order + " " + customer_order_obj)
+    // console.log(customer_order_obj.orderlist)
     fetch_customer_order();
 });
-fetch_customer_order();
 
 function fetch_customer_order() {
     let customer_order = localStorage.getItem("customer_order");
     if (customer_order) {
         let customer_order_obj = JSON.parse(customer_order);
-        console.log(customer_order_obj.orderlist)
         let table = "";
+
         $.each(customer_order_obj.orderlist, function (i, v) {
             let product_id = v.product_id;
             let product_code = v.product_code;
@@ -146,16 +146,140 @@ function fetch_customer_order() {
                 <td class="align-middle">${quantity}</td>
                 <td class="align-middle">${price * quantity}</td>
                 <td class="align-middle">
-                    <a href="javascript:void(0)" data-product_id="${product_id}" data-product_code="${product_code}" class="btn btn-sm btn-warning product_order" 
+                    <a href="javascript:void(0)" data-product_id="${product_id}" data-product_code="${product_code}" onclick="order_remove(${i})" class="btn btn-sm btn-warning order_remove" 
                         data-toggle="tooltip" title="Add To Order List"><i class="fa fa-minus-circle"></i>
                     </a>
                 </td>
                 `;
-            $("#customer_ordering tbody").html(table);
         });
+        $("#customer_ordering tbody").html(table);
+        price_calculate(customer_order_obj.orderlist);
+
     }
 }
-/* End - Edit Brand */
+
+function order_remove(id) {
+    let customer_order = localStorage.getItem("customer_order");
+    if (customer_order) {
+        let customer_order_obj = JSON.parse(customer_order);
+        customer_order_obj.orderlist.splice(id, 1);
+        localStorage.setItem("customer_order", JSON.stringify(customer_order_obj));
+    }
+    fetch_customer_order();
+}
+
+function price_calculate(orderlist) {
+    let orderlist_obj = orderlist;
+    let net_total = null;
+    $.each(orderlist_obj, function (i, v) {
+        let price = v.price;
+        let quantity = v.quantity;
+        net_total += price * quantity;
+        console.log(net_total);
+    })
+    $("#net_total").val(net_total);
+    $("#actual").val(net_total);
+}
+
+$("#discount").keyup(function () {
+    let discount = $(this).val();
+    let net_total = $("#net_total").val();
+    let actual_price = net_total - discount;
+
+    $("#actual").val(actual_price);
+})
+
+/* End - Order */
+
+/* Start - Order Now  */
+$(".jumbotron #order_now").click(function () {
+    let name = $("#name");
+    let phone = $("#phone");
+    let email = $("#email");
+    let address = $("#address");
+
+    let net_total = $("#net_total");
+    let discount = $("#discount");
+    let actual = $("#actual");
+    let payment = $("#payment");
+
+    if (name.val() == "") {
+        name.addClass("is-invalid");
+        $("#name_error").html(
+            `<span class="text-danger">Name is required.</span>`
+        );
+        status = false;
+    } else {
+        name.removeClass("is-invalid");
+        $("#name_error").html("");
+        status = true;
+    }
+
+    if (phone.val() == "") {
+        phone.addClass("is-invalid");
+        $("#phone_error").html(
+            `<span class="text-danger">Phone is required.</span>`
+        );
+        status = false;
+    } else {
+        phone.removeClass("is-invalid");
+        $("#phone_error").html("");
+        status = true;
+    }
+
+    if (email.val() == "") {
+        email.addClass("is-invalid");
+        $("#email_error").html(
+            `<span class="text-danger">Email is required.</span>`
+        );
+        status = false;
+    } else {
+        email.removeClass("is-invalid");
+        $("#email_error").html("");
+        status = true;
+    }
+
+    if (address.val() == "") {
+        address.addClass("is-invalid");
+        $("#address_error").html(
+            `<span class="text-danger">Address is required.</span>`
+        );
+        status = false;
+    } else {
+        address.removeClass("is-invalid");
+        $("#address_error").html("");
+        status = true;
+    }
+
+    if (payment.val() == "0") {
+        payment.addClass("is-invalid");
+        $("#payment_error").html(
+            `<span class="text-danger">Payment is required.</span>`
+        );
+        status = false;
+    } else {
+        payment.removeClass("is-invalid");
+        $("#payment_error").html("");
+        status = true;
+    }
+
+    if (name.val() && phone.val() && email.val() && address.val() && payment.val()) {
+        $(".overlay").show();
+        $.ajax({
+            url: DOMAIN + "/includes/ProductController.php",
+            method: "POST",
+            data: $("#brand_delete").serialize(),
+            success: function (data) {
+                if (data == "BRAND_DELETED") {
+                    fetch_brands(1);
+                    $(".overlay").hide();
+                }
+            },
+        });
+    }
+
+})
+/* End - Order Now  */
 
 /* Start - Delecte Brand */
 $("tbody").on("click", ".brand_delete", function () {
