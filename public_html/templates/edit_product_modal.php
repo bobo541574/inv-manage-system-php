@@ -12,6 +12,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <input type="hidden" name="edit" id="edit">
+                            <input type="hidden" name="product_id" id="product_id">
                             <div class="form-group">
                                 <input type="text" name="product_name" id="product_name" class="form-control"
                                     placeholder="Enter Category">

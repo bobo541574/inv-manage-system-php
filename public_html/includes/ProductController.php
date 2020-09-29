@@ -39,7 +39,7 @@ if (isset($_POST['product_name']) && isset($_POST['photo'])) {
     exit();
 }
 
-/* Fetch All Category */
+/* Fetch All Product */
 if (isset($_POST['current_page'])) {
     $result = new Product();
     $products = $result->getProductsWithPagination($_POST['current_page']);
@@ -48,31 +48,31 @@ if (isset($_POST['current_page'])) {
     exit();
 }
 
-/* Edit Selected Category */
-if (isset($_POST['category_name']) && isset($_POST['parent_cat_id']) && isset($_POST['category_id'])) {
+/* Edit Selected Product */
+if (isset($_POST['product_name']) && isset($_POST['product_id'])) {
     $result = new Product();
-    $category = $result->updateCategory($_POST['category_id'], $_POST['parent_cat_id'], $_POST['category_name']);
+    $category = $result->updateProduct($_POST);
 
     echo $category;
 
     exit();
 }
 
-/* Change Category Status */
-if (isset($_POST['category_id']) && isset($_POST['category_status'])) {
+/* Change Product Status */
+if (isset($_POST['product_id']) && isset($_POST['product_status'])) {
     $result = new Product();
-    $category = $result->statusCategory($_POST['category_id'], $_POST['category_status']);
+    $product = $result->statusProduct($_POST['product_id'], $_POST['product_status']);
 
-    echo $category;
+    echo $product;
 
     exit();
 }
 
-/* Delete Selected Category */
+/* Delete Selected Product */
 
-if (isset($_POST['category_id'])) {
+if (isset($_POST['product_id'])) {
     $result = new Product();
-    $category = $result->deleteCategory($_POST['category_id']);
+    $product = $result->deleteProduct($_POST['product_id']);
 
-    echo $category;
+    echo $product;
 }

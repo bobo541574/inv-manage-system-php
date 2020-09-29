@@ -7,7 +7,9 @@ $(document).ready(function () {
 
         if (email.val() == "") {
             email.addClass("border-danger");
-            $("#email_error").html("<span class='text-danger'>Email Address is required.</span>");
+            $("#email_error").html(
+                "<span class='text-danger'>Email Address is required.</span>"
+            );
             status = false;
         } else {
             email.removeClass("border-danger");
@@ -17,7 +19,9 @@ $(document).ready(function () {
 
         if (password.val() == "") {
             password.addClass("border-danger");
-            $("#password_error").html("<span class='text-danger'>Password is required.</span>");
+            $("#password_error").html(
+                "<span class='text-danger'>Password is required.</span>"
+            );
             status = false;
         } else {
             password.removeClass("border-danger");
@@ -27,7 +31,6 @@ $(document).ready(function () {
 
         if (email.val() && password.val()) {
             $(".overlay").show();
-
             $.ajax({
                 url: DOMAIN + "/includes/Auth.php",
                 method: "POST",
@@ -36,14 +39,18 @@ $(document).ready(function () {
                     if (data === "NOT_REGISTERED") {
                         $(".overlay").hide();
                         email.addClass("border-danger");
-                        $("#email_error").html(`<span class="text-danger">The specific <strong>Account</strong> is not registered</span>`);
+                        $("#email_error").html(
+                            `<span class="text-danger">The specific <strong>Account</strong> is not registered</span>`
+                        );
                         status = false;
                         // password.removeClass("border-danger");
                         // $("#password_error").html("");
                     } else if (data === "PASSWORD_NOT_MATCHED") {
                         $(".overlay").hide();
                         password.addClass("border-danger");
-                        $("#password_error").html(`<span class="text-danger">Password is not matched</span>`);
+                        $("#password_error").html(
+                            `<span class="text-danger">Password is not matched</span>`
+                        );
                         status = false;
                         // email.removeClass("border-danger");
                         // $("#email_error").html("");
@@ -57,8 +64,8 @@ $(document).ready(function () {
 
                         window.location.href = encodeURI(DOMAIN + "/dashboard.php");
                     }
-                }
-            })
+                },
+            });
         }
-    })
-})
+    });
+});

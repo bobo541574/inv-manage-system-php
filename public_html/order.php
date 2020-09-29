@@ -42,15 +42,15 @@ if (!isset($_SESSION["id"])) {
                                     style="font-size: medium;">
                                     <thead class="thead-inverse">
                                         <tr>
-                                            <th>No.</th>
-                                            <th>Photo</th>
-                                            <th>Product</th>
-                                            <th>Brand</th>
-                                            <th>Category</th>
-                                            <th>Color</th>
-                                            <th>Size</th>
-                                            <th>Price</th>
-                                            <th>Quantity</th>
+                                            <th style="width: 5%;">No.</th>
+                                            <th style="width: 15%;">Photo</th>
+                                            <th style="width: 15%;">Product</th>
+                                            <th style="width: 10%;">Brand</th>
+                                            <th style="width: 10%;">Category</th>
+                                            <th style="width: 10%;">Color</th>
+                                            <th style="width: 10%;">Size</th>
+                                            <th style="width: 10%;">Price</th>
+                                            <th style="width: 10%;">Quantity</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -133,9 +133,9 @@ if (!isset($_SESSION["id"])) {
                         </div>
                         <div class="row my-4">
                             <div class="col-md-12">
-                                <form id="customer_info">
+                                <form id="customer_info" onsubmit="return false">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <h4>Customer Informations</h4>
                                             <div class="form-group">
                                                 <input type="text" name="name" id="name" class="form-control"
@@ -158,32 +158,49 @@ if (!isset($_SESSION["id"])) {
                                                 <small id="address_error" class="form-text text-muted"></small>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-7">
                                             <h4>Order Informations</h4>
-                                            <div class="form-group">
-                                                <input type="text" name="net_total" id="net_total" class="form-control"
-                                                    placeholder="Net Total Price">
-                                                <small id="net_total_error" class="form-text text-muted"></small>
+                                            <div class="form-group row">
+                                                <label for="net_total" class="col-md-4">Net Total Price</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" name="net_total" id="net_total"
+                                                        class="form-control" placeholder="Net Total Price">
+                                                    <small id="net_total_error" class="form-text text-muted"></small>
+                                                </div>
                                             </div>
-                                            <div class="form-group">
+                                            <!-- <div class="form-group">
                                                 <input type="text" name="discount" id="discount" class="form-control"
                                                     placeholder="Enter For Discount Price">
                                                 <small id="discount_error" class="form-text text-muted"></small>
+                                            </div> -->
+                                            <div class="form-group row">
+                                                <label for="initial" class="col-md-4">Initial Payment</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" name="initial" id="initial" class="form-control"
+                                                        placeholder="Enter For Initial Payment">
+                                                    <small id="initial_error" class="form-text text-muted"></small>
+                                                </div>
                                             </div>
-                                            <div class="form-group">
-                                                <input type="text" name="actual" id="actual" class="form-control"
-                                                    placeholder="Actual Price">
-                                                <small id="actual_error" class="form-text text-muted"></small>
+                                            <div class="form-group row">
+                                                <label for="actual" class="col-md-4">Actual Price</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" name="actual" id="actual" class="form-control"
+                                                        placeholder="Actual Price">
+                                                    <small id="actual_error" class="form-text text-muted"></small>
+                                                </div>
                                             </div>
-                                            <div class="form-group">
-                                                <select name="payment" id="payment" class="custom-select">
-                                                    <option value="0">Choose Payment Methos</option>
-                                                    <option value="cash">Cash</option>
-                                                    <option value="wave">Wave Money</option>
-                                                    <option value="kbzpay">KBZ Pay</option>
-                                                    <option value="ayapay">AYA Pay</option>
-                                                </select>
-                                                <small id="payment_error" class="form-text text-muted"></small>
+                                            <div class="form-group row">
+                                                <label for="payment" class="col-md-4">Payment Methods</label>
+                                                <div class="col-md-8">
+                                                    <select name="payment" id="payment" class="custom-select">
+                                                        <option value="0">Choose Payment Methods</option>
+                                                        <option value="cash">Cash</option>
+                                                        <option value="wave">Wave Money</option>
+                                                        <option value="kbzpay">KBZ Pay</option>
+                                                        <option value="ayapay">AYA Pay</option>
+                                                    </select>
+                                                    <small id="payment_error" class="form-text text-muted"></small>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

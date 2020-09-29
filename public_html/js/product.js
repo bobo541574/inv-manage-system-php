@@ -111,6 +111,7 @@ function fetch_products(current_page) {
 
 /* Start - Edit Product */
 $("tbody").on("click", ".product_edit", function () {
+    let product_id = $(this).data("product_id");
     let product_name = $(this).data("product_name");
     let photo = $(this).data("photo");
     let category_id = $(this).data("category_id");
@@ -121,16 +122,17 @@ $("tbody").on("click", ".product_edit", function () {
     let quantity = $(this).data("quantity");
     console.log(photo);
 
-    $("form #product_name").val(product_name);
-    $("form #old_photo").val(photo);
-    // $("form #photo").val(photo);
-    $("form #category_id").val(category_id);
-    $("form #brand_id").val(brand_id);
-    $("form #color").val(color);
-    $("form #size").val(size);
-    $("form #price").val(price);
-    $("form #quantity").val(quantity);
-    $("form #edit").val("EDIT");
+    $("#edit_prod_modal #product_id").val(product_id);
+    $("#edit_prod_modal #product_name").val(product_name);
+    $("#edit_prod_modal #old_photo").val(photo);
+    // $("#edit_prod_modal #photo").val(photo);
+    $("#edit_prod_modal #category_id").val(category_id);
+    $("#edit_prod_modal #brand_id").val(brand_id);
+    $("#edit_prod_modal #color").val(color);
+    $("#edit_prod_modal #size").val(size);
+    $("#edit_prod_modal #price").val(price);
+    $("#edit_prod_modal #quantity").val(quantity);
+    $("#edit_prod_modal #edit").val("EDIT");
 });
 
 $("#edit_prod_modal").on("submit", function () {
@@ -174,17 +176,44 @@ $("#edit_prod_modal").on("submit", function () {
         $.ajax({
             url: DOMAIN + "/includes/ProductController.php",
             method: "POST",
-            data: $("#bd_modal").serialize(),
+            data: $("#edit_prod_modal").serialize(),
             success: function (data) {
+                console.log(data)
+
                 if (data == "PRODUCT_UPDATED") {
                     // $(".overlay").hide();
-                    window.location.reload();
+                    // fetch_products(1);
+                    console.log(data)
+                    // window.location.reload();
                 }
             },
         });
     }
 });
 /* End - Edit Product */
+
+/* Start - Product Status */
+$("tbody").on("change", ".product_status", function () {
+    let status = $(this).data("status");
+    let product_id = $(this).data("product_id");
+    $(".overlay").show();
+    $.ajax({
+        url: DOMAIN + "/includes/ProductController.php",
+        method: "POST",
+        data: {
+            product_id: product_id,
+            product_status: status,
+        },
+        success: function (data) {
+            console.log(data);
+            $(".overlay").hide();
+            if (data == "PRODUCT_STATUS") {
+                // window.location.reload();
+            }
+        },
+    });
+});
+/* End - Product Status */
 
 /* Start - Delect Product */
 $("tbody").on("click", ".product_delete", function () {
@@ -410,20 +439,22 @@ $("#prod_modal").on("submit", function () {
         quantity.val()
     ) {
         /* Add Product */
-        $(".overlay").show();
+        // $(".overlay").show();
         $.ajax({
             url: DOMAIN + "/includes/ProductController.php",
             method: "POST",
             data: $("#prod_modal").serialize() + `&photo=${photo[0].files[0].name}`,
             success: function (data) {
                 if (data == "PRODUCT_ADDED") {
-                    $(".overlay").hide();
-                    $("#prod_modal_alert")
-                        .html(`<div class="alert alert-warning text-center" role="alert">
-                                                    <small class="text text-success">Product is successfully add!!!</small>
-                                                </div>`);
-                    $("#product_name").html("");
-                    $("#product_name").val("");
+                    fetch_products(1);
+
+                    // $(".overlay").hide();
+                    // $("#prod_modal_alert")
+                    //     .html(`<div class="alert alert-warning text-center" role="alert">
+                    //                                 <small class="text text-success">Product is successfully add!!!</small>
+                    //                             </div>`);
+                    // $("#product_name").html("");
+                    // $("#product_name").val("");
                 }
             },
         });

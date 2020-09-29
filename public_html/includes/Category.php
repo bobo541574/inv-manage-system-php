@@ -143,6 +143,7 @@ class Category
 }
 
 // $cat = new Category();
+// echo json_encode($cat->getAllCategories());
 // echo "<pre>";
 // print_r($cat->getAllCategories());
 // echo "</pre>";

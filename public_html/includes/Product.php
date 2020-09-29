@@ -13,6 +13,7 @@ class Product
         $this->con = $db->connect();
     }
 
+    /* Photo Upload */
     public function photoUpload($photo)
     {
         $photo_name = $photo['name'];
@@ -22,7 +23,7 @@ class Product
         $type = $photo['type'];
 
         /* Upload Location */
-        $dir = BASE_LOCATION . "/images/products/";
+        $dir = DOMAIN . "/images/products/";
 
         /* Valid File Types */
         $valid_extensions = array("image/jpg", "image/jpeg", "image/png");
@@ -46,9 +47,11 @@ class Product
             return "FILE_ALREADY_EXIST";
         }
     }
+
+    /* Add Product */
     public function addProduct(...$arg)
     {
-        $product_code = "SKU-C{$arg[0]['category_id']}B{$arg[0]['brand_id']}-" . strtoupper($arg[0]['color']) . "-" . strtoupper($arg[0]['product_name']);
+        $product_code = "SKU-C{$arg[0]['category_id']}B{$arg[0]['brand_id']}-" . strtoupper($arg[0]['color']) . "-" . strtoupper(str_replace(" ", "", $arg[0]['product_name']));
         // return $product_code;
 
         $sql = "INSERT INTO `products` (`product_code`, `product_name`, `photo`, `category_id`, `brand_id`, `color`, `size`, `price`, `quantity`)
@@ -56,6 +59,7 @@ class Product
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("sssiissss", $product_code, $arg[0]['product_name'], $arg[0]['photo'], $arg[0]['category_id'], $arg[0]['brand_id'], $arg[0]['color'], $arg[0]['size'], $arg[0]['price'], $arg[0]['quantity']);
         $result = $stmt->execute() or die($this->con->error);
+
         if ($result) {
             return "PRODUCT_ADDED";
         } else {
@@ -63,20 +67,7 @@ class Product
         }
     }
 
-    public function addCategory($parent_cat_id, $category_name)
-    {
-        $stmt = $this->con->prepare("INSERT INTO `categories` (`parent_cat_id`, `category_name`, `status`) 
-                                    VALUES(?, ?, ?)");
-        $status = 1;
-        $stmt->bind_param("isi", $parent_cat_id, $category_name, $status);
-        $result = $stmt->execute() or die($this->con->error);
-        if ($result) {
-            return "CATEGORY_ADDED";
-        } else {
-            return 0;
-        }
-    }
-
+    /* Fetch Single Product */
     public function getSingleProduct($product_id)
     {
         $sql = "SELECT * FROM `products` WHERE `product_id` = ?";
@@ -84,13 +75,14 @@ class Product
         $stmt->bind_param("i", $product_id);
         $stmt->execute() or die($this->con->error);
         $result = $stmt->get_result();
-        if ($result->num_rows == 1) {
+        if ($result) {
             return $result->fetch_assoc();
         } else {
             return 0;
         }
     }
 
+    /* Fetch All Product */
     public function getAllProducts()
     {
         $stmt = $this->con->prepare(
@@ -114,6 +106,7 @@ class Product
         }
     }
 
+    /* Fetch All Product With Pagination*/
     private function paginate($table, $toCount, $current_page)
     {
         $paginate = [];
@@ -144,7 +137,7 @@ class Product
         $skipOfRecords = $paginate["skipOfRecords"];
 
         $sql = "SELECT pds.*, cats.category_name, bds.brand_name
-        FROM products as pds 
+        FROM products as pds
         JOIN categories as cats 
         ON pds.category_id = cats.cat_id
         JOIN brands as bds 
@@ -174,44 +167,50 @@ class Product
         return "NO_DATA";
     }
 
-    public function updateCategory($category_id, $parent_cat_id, $category_name)
+    /* Update Product */
+    public function updateProduct(...$arg)
     {
-        $sql = "UPDATE categories SET `parent_cat_id` = ?, `category_name` = ? WHERE `cat_id` = ?";
+        $product_code = "SKU-C{$arg[0]['category_id']}B{$arg[0]['brand_id']}-" . strtoupper($arg[0]['color']) . "-" . strtoupper(str_replace(" ", "", $arg[0]['product_name']));
+        $photo = isset($arg[0]['photo']) ? $arg[0]['photo'] : $arg[0]['old_photo'];
+        $sql = "UPDATE products SET `product_code` = ?, `product_name` = ?, `photo` = ?, `category_id` = ?, `brand_id` = ?, `color` = ?, `size` = ?, `price` = ?, `quantity` = ? WHERE `product_id` = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("isi", $parent_cat_id, $category_name, $category_id);
-        $result = $stmt->execute() or die($this->con->error);
+        $stmt->bind_param("sssiissssi", $product_code, $arg[0]['product_name'], $photo, $arg[0]['category_id'], $arg[0]['brand_id'], $arg[0]['color'], $arg[0]['size'], $arg[0]['price'], $arg[0]['quantity'], $arg[0]['product_id']);
+        $stmt->execute() or die($this->con->error);
+        $result = $stmt->get_result();
 
-        if ($result) {
-            return "CATEGORY_UPDATED";
+        if ($result->num_rows == 1) {
+            return $result->fetch_assoc();
         } else {
             return 0;
         }
     }
 
-    public function statusCategory($category_id, $category_status)
+    /* Change Status */
+    public function statusProduct($product_id, $product_status)
     {
-        $category_status = $category_status ? 0 : 1;
-        $sql = "UPDATE categories SET `status` = ? WHERE `cat_id` = ?";
+        $product_status = $product_status ? 0 : 1;
+        $sql = "UPDATE products SET `status` = ? WHERE `product_id` = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("si", $category_status, $category_id);
+        $stmt->bind_param("si", $product_status, $product_id);
         $result = $stmt->execute() or die($this->con->error);
 
         if ($result) {
-            return "CATEGORY_STATUS";
+            return "PRODUCT_STATUS";
         } else {
             return 0;
         }
     }
 
-    public function deleteCategory($category_id)
+    /* Delete Product */
+    public function deleteProduct($product_id)
     {
-        $sql = "DELETE FROM categories WHERE `cat_id` = ?";
+        $sql = "DELETE FROM products WHERE `product_id` = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("i", $category_id);
+        $stmt->bind_param("i", $product_id);
         $result = $stmt->execute() or die($this->con->error);
 
         if ($result) {
-            return "CATEGORY_DELETED";
+            return "PRODUCT_DELETED";
         } else {
             return 0;
         }
@@ -220,5 +219,5 @@ class Product
 
 // $products = new Product();
 // echo "<pre>";
-// print_r($products->addProduct("Bo Bo", "May"));
+// print_r($products->getProductsWithPagination(1));
 // echo "</pre>";

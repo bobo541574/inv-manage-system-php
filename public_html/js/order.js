@@ -7,7 +7,7 @@ fetch_customer_order();
 /* Start - Fetch All Brand */
 function fetch_products(current_page) {
     $.ajax({
-        url: DOMAIN + "/includes/ProductController.php",
+        url: DOMAIN + "/includes/OrderController.php",
         method: "POST",
         data: {
             current_page: current_page /* To Check Server Side */ ,
@@ -37,10 +37,10 @@ function fetch_products(current_page) {
 
                 table += `<tr>
                     <td class="align-middle">${(skip_records + i) + 1}</td>
-                    <td class="align-middle">${product_name}</td>
                     <td class="align-middle">
-                        <img src="${DOMAIN}/${photo}" alt="product_image" />
+                        <img src="${DOMAIN}/images/products/${photo}" alt="product_image" />
                     </td>
+                    <td class="align-middle">${product_name}</td>
                     <td class="align-middle">${category_name}</td>
                     <td class="align-middle">${brand_name}</td>
                     <td class="align-middle">${color}</td>
@@ -61,16 +61,16 @@ function fetch_products(current_page) {
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-end mr-4">
                                     <li class="page-item ${current_page > 1 ? "" : "disabled text-muted"}">
-                                        <a class="page-link" href="javascript:void(0)" aria-label="Previous" onclick="fetch_brands(${prev_page})">
+                                        <a class="page-link" href="javascript:void(0)" aria-label="Previous" onclick="fetch_products(${prev_page})">
                                             <span aria-hidden="true">&laquo;</span>
                                         </a>
                                     </li>`;
                 for (let i = 1; i <= total_pages; i++) {
-                    paginate += `<li class="page-item"><a class="page-link ${current_page == i ? 'bg-primary text-light' : ''}" href="javascript:void(0)" onclick="fetch_brands(${i})">${i}</a></li>`;
+                    paginate += `<li class="page-item"><a class="page-link ${current_page == i ? 'bg-primary text-light' : ''}" href="javascript:void(0)" onclick="fetch_products(${i})">${i}</a></li>`;
                 }
                 paginate += `
                                     <li class="page-item ${next_page <= total_pages ? "" : "disabled text-muted"}">
-                                        <a class="page-link" href="javascript:void(0)" aria-label="Next" onclick="fetch_brands(${next_page})">
+                                        <a class="page-link" href="javascript:void(0)" aria-label="Next" onclick="fetch_products(${next_page})">
                                             <span aria-hidden="true">&raquo;</span>
                                         </a>
                                     </li>
@@ -126,9 +126,9 @@ $("tbody").on("click", ".product_order", function () {
 
 function fetch_customer_order() {
     let customer_order = localStorage.getItem("customer_order");
+    let table = "";
     if (customer_order) {
         let customer_order_obj = JSON.parse(customer_order);
-        let table = "";
 
         $.each(customer_order_obj.orderlist, function (i, v) {
             let product_id = v.product_id;
@@ -155,6 +155,8 @@ function fetch_customer_order() {
         $("#customer_ordering tbody").html(table);
         price_calculate(customer_order_obj.orderlist);
 
+    } else {
+        $("#customer_ordering tbody").html(table);
     }
 }
 
@@ -181,10 +183,18 @@ function price_calculate(orderlist) {
     $("#actual").val(net_total);
 }
 
-$("#discount").keyup(function () {
-    let discount = $(this).val();
+// $("#discount").keyup(function () {
+//     let discount = $(this).val();
+//     let net_total = $("#net_total").val();
+//     let actual_price = net_total - discount;
+
+//     $("#actual").val(actual_price);
+// })
+$("#initial").keyup(function () {
+    console.log("keyup")
+    let initial = $(this).val();
     let net_total = $("#net_total").val();
-    let actual_price = net_total - discount;
+    let actual_price = net_total - initial;
 
     $("#actual").val(actual_price);
 })
@@ -264,16 +274,22 @@ $(".jumbotron #order_now").click(function () {
     }
 
     if (name.val() && phone.val() && email.val() && address.val() && payment.val()) {
-        $(".overlay").show();
+        // $(".overlay").show();
+        let customer_order = localStorage.getItem("customer_order");
+        let customer_order_obj = JSON.parse(customer_order);
+        customer_order = JSON.stringify(customer_order_obj.orderlist);
         $.ajax({
-            url: DOMAIN + "/includes/ProductController.php",
+            url: DOMAIN + "/includes/OrderController.php",
             method: "POST",
-            data: $("#brand_delete").serialize(),
+            data: $("#customer_info").serialize() + `&product_lists=${customer_order}`,
             success: function (data) {
-                if (data == "BRAND_DELETED") {
-                    fetch_brands(1);
-                    $(".overlay").hide();
+                if (data == "PRODUCT_ORDER") {
+                    localStorage.removeItem("customer_order");
+                    // $(".overlay").hide();
+                    fetch_customer_order();
                 }
+                fetch_customer_order();
+
             },
         });
     }
