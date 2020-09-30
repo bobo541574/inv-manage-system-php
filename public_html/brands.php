@@ -2,7 +2,12 @@
 
 include_once("./database/constants.php");
 
+if (!isset($_SESSION["id"])) {
+    return header("location: " . DOMAIN . "/index.php");
+}
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
