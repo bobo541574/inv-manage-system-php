@@ -11,7 +11,7 @@ $(document).ready(function () {
         // let name_pattern = new RegExp(/^[A-Za-z]+$/);
         // let email_pattern = new RegExp(/^[a-z0-9_-]+(\.[a-z0-9_-]+)*@[a-z0-9_-]+(\.[a-z0-9_-]+)*(\.[a-z]{2,4})$/);
 
-        if (username.val() == "") {
+        if (username.val() === "") {
             username.addClass("border-danger");
             $("#username_error").html("<span class='text-danger'>Username is required.</span>");
             status = false;
@@ -21,7 +21,7 @@ $(document).ready(function () {
             status = true;
         }
 
-        if (email.val() == "") {
+        if (email.val() === "") {
             email.addClass("border-danger");
             $("#email_error").html("<span class='text-danger'>Email Address is required.</span>");
             status = false;
@@ -31,7 +31,7 @@ $(document).ready(function () {
             status = true;
         }
 
-        if (password.val() == "") {
+        if (password.val() === "") {
             password.addClass("border-danger");
             $("#password_error").html("<span class='text-danger'>Password is required.</span>");
             status = false;
@@ -41,7 +41,7 @@ $(document).ready(function () {
             status = true;
         }
 
-        if (confirm_password.val() == "") {
+        if (confirm_password.val() === "") {
             confirm_password.addClass("border-danger");
             $("#confirm_password_error").html("<span class='text-danger'>Confirm Password is required.</span>");
             status = false;
@@ -51,7 +51,7 @@ $(document).ready(function () {
             status = true;
         }
 
-        if (user_type.val() == "") {
+        if (user_type.val() === "") {
             user_type.addClass("border-danger");
             $("#user_type_error").html("<span class='text-danger'>User Type is required.</span>");
             status = false;
@@ -61,7 +61,7 @@ $(document).ready(function () {
             status = true;
         }
 
-        if (status == true && password.val() !== confirm_password.val()) {
+        if (status === true && password.val() !== confirm_password.val()) {
             confirm.addClass("alert alert-warning");
             $("#confirm").html("<span class='text-danger'>Password is not matched!!!</span>");
             status = false;

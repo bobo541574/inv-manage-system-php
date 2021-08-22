@@ -44,13 +44,13 @@ if (!isset($_SESSION["id"])) {
                     </div>
                 </div>
                 <div class="col-md-8">
-                    <div class="jumbotron shadow" style=" width:100%; height:100%;">
-                        <p>Welcome Admin, </p>
+                    <div class="jumbotron shadow p-4" style=" width:100%; height:100%;">
+                        <h1 class="text-center mb-5">Welcome Admin </h1>
                         <div class="row">
-                            <div class="col-sm-6">
-                                <iframe
+                            <div class="col-sm-6" id="clock">
+                                <!-- <iframe
                                     src="http://free.timeanddate.com/clock/i7grmx9o/n208/szw160/szh160/cf100/hnce1ead6/fdi78"
-                                    frameborder="0" width="160" height="160"></iframe>
+                                    frameborder="0" width="160" height="160"></iframe> -->
 
                             </div>
                             <div class="col-sm-6">
@@ -211,6 +211,26 @@ if (!isset($_SESSION["id"])) {
     <?php include_once('./templates/scripts.php') ?>
     <script src="./js/product.js"></script>
     <script>
+    let flag = true;
+
+    let startTimer = () => {
+        let today = new Date();
+        let day = today.toDateString();
+        let time = today.toLocaleTimeString();
+        let hour = today.getHours();
+        let min = today.getMinutes();
+        let sec = today.getSeconds();
+        // let clock =
+        //     `<h2>${day}</h2><strong style="font-size: 32px;"><i>${hour} : ${min < 10 ? "0" + min : min} : ${sec < 10 ? "0" + sec : sec}</i><strong>`;
+        // console.log(hour + " : " + min + " : " + sec + " / " + flag)
+        let clock =
+            `<h2>${day}</h2><strong style="font-size: 32px;"><i>${time}</i><strong>`;
+        document.getElementById('clock').innerHTML = clock;
+        setTimeout(startTimer, 1000)
+        flag = false;
+    }
+    flag == true ? startTimer() : '';
+
     // $(document).ready(function() {
     /* Fetch All Parent Category */
     fetch_parent_categories();

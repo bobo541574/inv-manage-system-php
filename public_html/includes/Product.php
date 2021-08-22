@@ -9,8 +9,7 @@ class Product
     {
         include_once("../database/Database.php");
 
-        $db = new Database();
-        $this->con = $db->connect();
+        $this->con = (new Database)->connect();
     }
 
     /* Photo Upload */
@@ -85,16 +84,14 @@ class Product
     /* Fetch All Product */
     public function getAllProducts()
     {
-        $stmt = $this->con->prepare(
-            "SELECT *, cats.category_name, bds.brand_name, sku.sku_code, sku.color, sku.size, sku.price, sku.quantity
+        $stmt = $this->con->prepare("SELECT *, cats.category_name, bds.brand_name, sku.sku_code, sku.color, sku.size, sku.price, sku.quantity
             FROM products as pds 
             JOIN categories as cats 
             ON pds.category_id = cats.cat_id
             JOIN brands as bds 
             ON pds.brand_id = bds.brand_id
             JOIN sku
-            ON pds.sku_code = sku.sku_code"
-        );
+            ON pds.sku_code = sku.sku_code");
         $stmt->execute() or die($this->con->error);
         $result = $stmt->get_result();
         $rows = [];
@@ -111,7 +108,7 @@ class Product
     {
         $paginate = [];
         $numberOfRecordsPrePage = 10;
-        $sql =  "SELECT COUNT($toCount) as results FROM $table";
+        $sql = "SELECT COUNT($toCount) as results FROM $table";
         $query = $this->con->query($sql);
         $numberOfRecords = mysqli_fetch_assoc($query);
         $totalPages = ceil($numberOfRecords["results"] / $numberOfRecordsPrePage);
@@ -149,9 +146,7 @@ class Product
         $result = $stmt->get_result();
         $paginatedRecords = [];
         $rows = [];
-        // echo $result->num_rows;
-        // die();
-        // exit();
+
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $rows[] = $row;

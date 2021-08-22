@@ -17,9 +17,7 @@ if (isset($_FILES['file'])) {
 if (isset($_GET['product_id'])) {
     $result = new Product();
     $product = $result->getSingleProduct($_GET['product_id']);
-    // echo "<pre>";
-    // print_r($product);
-    // echo "</pre>";
+
     header("location: " . DOMAIN . "/products.php?product=" . json_encode($product));
 
     exit();
@@ -31,10 +29,6 @@ if (isset($_POST['product_name']) && isset($_POST['photo'])) {
     $product = $result->addProduct($_POST);
     // $product = $result->addProduct($_POST['product_name'], $_POST['photo'], $_POST['category_id'], $_POST['brand_id'], $_POST['color'], $_POST['size'], $_POST['price'], $_POST['quantity']);
     echo $product;
-
-    // echo "<pre>";
-    // print_r($product);
-    // echo "</pre>";
 
     exit();
 }

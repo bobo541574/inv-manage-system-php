@@ -34,6 +34,7 @@ $(document).ready(function () {
             $.ajax({
                 url: DOMAIN + "/includes/Auth.php",
                 method: "POST",
+                crossOrigin: true,
                 data: $("#login_form").serialize(),
                 success: function (data) {
                     if (data === "NOT_REGISTERED") {
@@ -43,8 +44,6 @@ $(document).ready(function () {
                             `<span class="text-danger">The specific <strong>Account</strong> is not registered</span>`
                         );
                         status = false;
-                        // password.removeClass("border-danger");
-                        // $("#password_error").html("");
                     } else if (data === "PASSWORD_NOT_MATCHED") {
                         $(".overlay").hide();
                         password.addClass("border-danger");
@@ -52,8 +51,6 @@ $(document).ready(function () {
                             `<span class="text-danger">Password is not matched</span>`
                         );
                         status = false;
-                        // email.removeClass("border-danger");
-                        // $("#email_error").html("");
                     } else {
                         $(".overlay").hide();
                         email.removeClass("border-danger");

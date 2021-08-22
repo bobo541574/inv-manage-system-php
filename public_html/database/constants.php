@@ -2,12 +2,12 @@
 
 session_start();
 
-DEFINE('HOST', 'localhost');
-DEFINE('USER', 'root');
-DEFINE('PASS', '');
-DEFINE('DB', 'php_inventory');
+const HOST = 'localhost';
+const USER = 'root';
+const PASS = '';
+const DB = 'php_project_inventory';
 
-const DOMAIN = "http://localhost/projects/PHP/Inventory-Management-System/public_html";
+const DOMAIN = "http://localhost/me/PHP/projects/Inventory-Management-System/public_html";
 // const BASE_LOCATION = "/opt/lampp/htdocs/projects/PHP/Inventory-Management-System/public_html";
 //   "/opt/lampp/htdocs/projects/PHP/Inventory-Management-System/public_html/images/products/product_sample1.jpg
 

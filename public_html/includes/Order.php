@@ -6,8 +6,7 @@ class Order
     public function __construct()
     {
         include_once("../database/Database.php");
-        $db = new Database();
-        $this->con = $db->connect();
+        $this->con = (new Database)->connect();
     }
 
     public function addOrder($orders)

@@ -9,8 +9,7 @@ class Category
     {
         include_once("../database/Database.php");
 
-        $db = new Database();
-        $this->con = $db->connect();
+        $this->con = (new Database)->connect();
     }
 
     public function addCategory($parent_cat_id, $category_name)

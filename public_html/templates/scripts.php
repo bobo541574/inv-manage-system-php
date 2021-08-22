@@ -3,42 +3,42 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-var DOMAIN = "http://localhost/projects/PHP/Inventory-Management-System/public_html";
-var BaseURL = "/opt/lampp/htdocs/projects/PHP/Inventory-Management-System/public_html";
+var DOMAIN = "http://localhost/me/PHP/projects/Inventory-Management-System/public_html";
+var BaseURL = "/opt/lampp/htdocs/me/PHP/projects/Inventory-Management-System/public_html";
 
-/* Fetch All Parent Category */
-fetch_parent_categories();
+// /* Fetch All Parent Category */
+// fetch_parent_categories();
 
-function fetch_parent_categories() {
-    $.ajax({
-        url: DOMAIN + "/includes/CategoryController.php",
-        method: "POST",
-        data: {
-            getParentCategory: 1 /* To Check Server Side */ ,
-        },
-        success: function(data) {
-            let choose = "<option value='0'>Choose Parent Category</option>";
-            $("form #parent_cat_id").html(choose + data);
-        },
-    });
-}
+// function fetch_parent_categories() {
+//     $.ajax({
+//         url: DOMAIN + "/includes/CategoryController.php",
+//         method: "POST",
+//         data: {
+//             getParentCategory: 1 /* To Check Server Side */ ,
+//         },
+//         success: function(data) {
+//             let choose = "<option value='0'>Choose Parent Category</option>";
+//             $("form #parent_cat_id").html(choose + data);
+//         },
+//     });
+// }
 
-fetch_brands();
+// fetch_brands();
 
-function fetch_brands() {
-    $.ajax({
-        url: DOMAIN + "/includes/BrandController.php",
-        method: "POST",
-        data: {
-            getBrand: 1 /* To Check Server Side */ ,
-        },
-        success: function(data) {
-            let choose = "<option value='0'>Choose Brand</option>";
-            $("#brand_id").html(choose + data);
-            $("#edit_prod_modal #brand_id").html(choose + data);
-        },
-    });
-}
+// function fetch_brands() {
+//     $.ajax({
+//         url: DOMAIN + "/includes/BrandController.php",
+//         method: "POST",
+//         data: {
+//             getBrand: 1 /* To Check Server Side */ ,
+//         },
+//         success: function(data) {
+//             let choose = "<option value='0'>Choose Brand</option>";
+//             $("#brand_id").html(choose + data);
+//             $("#edit_prod_modal #brand_id").html(choose + data);
+//         },
+//     });
+// }
 </script>
 
 

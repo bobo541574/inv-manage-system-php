@@ -8,8 +8,7 @@ class User
     {
         include_once('../database/Database.php');
 
-        $db = new Database();
-        $this->con = $db->connect();
+        $this->con = (new Database)->connect();
     }
 
     /* To check, user is already registered or not. */

@@ -9,8 +9,7 @@ class Pagination
         include_once("../database/Database.php");
         include_once("Category.php");
 
-        $db = new Database();
-        $this->con = $db->connect();
+        $this->con = (new Database)->connect();
     }
 
     public function pagination()
