@@ -3,8 +3,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-var DOMAIN = "http://localhost/me/PHP/projects/Inventory-Management-System/public_html";
-var BaseURL = "/opt/lampp/htdocs/me/PHP/projects/Inventory-Management-System/public_html";
+
+var DOMAIN = window.location.origin;
+var BaseURL = window.location.origin;
+
 
 // /* Fetch All Parent Category */
 // fetch_parent_categories();
